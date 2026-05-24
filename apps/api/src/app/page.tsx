@@ -2,266 +2,313 @@ import Image from "next/image";
 
 const APK_DOWNLOAD_URL = process.env.NEXT_PUBLIC_APK_DOWNLOAD_URL || "/HyperVoice-release.apk";
 
-const NAV = [
-  { href: "#features", label: "Features" },
-  { href: "#how", label: "How it works" },
-  { href: "#stats", label: "Impact" },
-  { href: "#privacy", label: "Privacy" },
-  { href: "#apps", label: "Use anywhere" },
-  { href: "#download", label: "Download" }
+const apps = [
+  "WhatsApp",
+  "Messenger",
+  "Telegram",
+  "Gmail",
+  "Notes",
+  "Chrome",
+  "Instagram",
+  "Facebook",
+  "Docs",
+  "Forms",
+  "Search",
+  "SMS"
+];
+
+const features = [
+  {
+    eyebrow: "Dictate",
+    title: "Speak naturally. HyperVoice cleans the sentence.",
+    body: "Filler words, repetitions, loose grammar, and half-finished phrasing become polished text before it lands in the field.",
+    points: ["Removes filler words", "Formats messages", "Works in English, Bangla, and Hindi"]
+  },
+  {
+    eyebrow: "Rewrite",
+    title: "Change tone without leaving the app.",
+    body: "Turn a raw thought into a professional email, a casual reply, a shorter note, or a clean bullet list.",
+    points: ["Professional", "Casual", "Shorter", "Email-ready"]
+  },
+  {
+    eyebrow: "Personal",
+    title: "Teach it the words that matter to you.",
+    body: "Names, brands, local phrases, and repeated terms stay accurate with a personal dictionary tied to your account.",
+    points: ["Custom dictionary", "Cloud settings", "Optional history"]
+  }
+];
+
+const testimonials = [
+  {
+    quote: "I can reply faster in Bangla and English without fighting autocorrect.",
+    name: "Beta user",
+    role: "Android tester"
+  },
+  {
+    quote: "The keyboard feels like dictation plus an editor sitting inside every chat app.",
+    name: "Early adopter",
+    role: "Creator"
+  },
+  {
+    quote: "Installing the APK was simple, and the cloud API means it works away from my Wi-Fi.",
+    name: "Remote tester",
+    role: "Power user"
+  }
 ];
 
 export default function LandingPage() {
   return (
-    <div className="page">
-      <div className="mesh" aria-hidden />
-      <div className="orb orb-1" aria-hidden />
-      <div className="orb orb-2" aria-hidden />
-      <div className="orb orb-3" aria-hidden />
+    <main className="page">
+      <div className="ambient-grid" aria-hidden />
 
-      <header className="wrap">
+      <header className="site-header">
         <nav className="nav glass">
-          <a href="#" className="nav-brand">
-            <Image src="/logo.png" alt="HyperVoice" width={36} height={36} priority />
-            HyperVoice
+          <a href="#top" className="brand" aria-label="HyperVoice home">
+            <Image src="/logo.png" alt="" width={40} height={40} priority />
+            <span>HyperVoice</span>
           </a>
-          <div className="nav-links">
-            {NAV.map((item) => (
-              <a key={item.href} href={item.href}>
-                {item.label}
-              </a>
-            ))}
+          <div className="nav-links" aria-label="Primary navigation">
+            <a href="#everywhere">Everywhere</a>
+            <a href="#features">Features</a>
+            <a href="#privacy">Privacy</a>
+            <a href="#download">Download</a>
           </div>
-          <a href="#download" className="btn btn-primary" style={{ padding: "10px 20px", fontSize: "0.85rem" }}>
-            Get APK
+          <a href={APK_DOWNLOAD_URL} className="btn btn-dark nav-cta">
+            <DownloadIcon />
+            APK
           </a>
         </nav>
       </header>
 
-      <main>
-        {/* 1 — Hero */}
-        <section id="hero" className="hero wrap">
-          <div className="hero-inner glass">
-            <div className="hero-badge">
-              <span>✦</span> Android · AI voice keyboard · Free MVP
-            </div>
-            <div className="hero-visual">
-              <Image src="/logo.png" alt="" width={120} height={120} className="hero-logo" priority />
-            </div>
-            <h1>Speak. We write it perfectly.</h1>
-            <p>
-              HyperVoice turns your voice into polished text in Messenger, WhatsApp, email, and every
-              app you use — with real-time AI cleanup in English, Bangla, and Hindi.
-            </p>
-            <div className="hero-actions">
-              <a href="#download" className="btn btn-primary">
-                <DownloadIcon />
-                Download for Android
-              </a>
-              <a href="#how" className="btn btn-ghost">
-                See how it works
-              </a>
-            </div>
+      <section id="top" className="hero section-shell">
+        <div className="hero-copy">
+          <div className="pill">
+            <span className="live-dot" />
+            Android AI voice keyboard
           </div>
-        </section>
-
-        {/* 2 — Features bento */}
-        <section id="features" className="wrap">
-          <span className="section-label">Features</span>
-          <h2 className="section-title">Built for how you actually type</h2>
-          <p className="section-desc">
-            A full keyboard plus a voice layer that understands context, language, and your custom
-            dictionary.
+          <h1>
+            Speak,
+            <span>don&apos;t type</span>
+          </h1>
+          <p>
+            HyperVoice turns natural speech into clean messages, emails, and notes across the
+            Android apps you already use. Built for English, Bangla, and Hindi.
           </p>
-          <div className="bento" style={{ marginTop: 40 }}>
-            <article className="bento-card glass bento-highlight span-8">
-              <div className="bento-icon">🎤</div>
-              <h3>Voice → AI → Insert</h3>
-              <p>
-                Tap the mic, speak naturally, and get cleaned text inserted straight into the field
-                you&apos;re typing in — no copy-paste.
-              </p>
-            </article>
-            <article className="bento-card glass span-4">
-              <div className="bento-icon">✨</div>
-              <h3>Smart cleanup</h3>
-              <p>Removes filler words, fixes grammar, and formats sentences instantly.</p>
-            </article>
-            <article className="bento-card glass span-4">
-              <div className="bento-icon">🌐</div>
-              <h3>3 languages</h3>
-              <p>English, Bangla, and Hindi with one-tap switching on the keyboard.</p>
-            </article>
-            <article className="bento-card glass span-4">
-              <div className="bento-icon">📖</div>
-              <h3>Custom dictionary</h3>
-              <p>Teach HyperVoice names, brands, and terms so spellings stay yours.</p>
-            </article>
-            <article className="bento-card glass span-4">
-              <div className="bento-icon">🔄</div>
-              <h3>Rewrite modes</h3>
-              <p>Professional, casual, shorter, email-ready, and more — powered by AI.</p>
-            </article>
-          </div>
-        </section>
-
-        {/* 3 — How it works */}
-        <section id="how" className="wrap">
-          <span className="section-label">How it works</span>
-          <h2 className="section-title">Up and running in minutes</h2>
-          <p className="section-desc">Four steps from install to your first perfect message.</p>
-          <div className="steps">
-            {[
-              { n: "1", title: "Install APK", desc: "Download and open HyperVoice on your Android phone." },
-              { n: "2", title: "Sign in", desc: "Create an account — your settings sync to the cloud." },
-              { n: "3", title: "Enable keyboard", desc: "Turn on HyperVoice in system input settings." },
-              { n: "4", title: "Speak anywhere", desc: "Open any chat app, switch keyboard, tap mic." }
-            ].map((step) => (
-              <article key={step.n} className="step glass">
-                <div className="step-num">{step.n}</div>
-                <h4>{step.title}</h4>
-                <p>{step.desc}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        {/* 4 — Stats / impact */}
-        <section id="stats" className="wrap">
-          <span className="section-label">Impact</span>
-          <h2 className="section-title">Type at the speed of speech</h2>
-          <p className="section-desc">
-            Track dictation time, words detected, WPM, and time saved versus thumb-typing.
-          </p>
-          <div className="stats-row">
-            {[
-              { value: "3×", label: "Faster than typing" },
-              { value: "130", label: "Voice WPM target" },
-              { value: "0", label: "Audio stored" },
-              { value: "∞", label: "Apps supported" }
-            ].map((stat) => (
-              <article key={stat.label} className="stat-card glass">
-                <div className="stat-value">{stat.value}</div>
-                <div className="stat-label">{stat.label}</div>
-              </article>
-            ))}
-          </div>
-          <div className="bento" style={{ marginTop: 24 }}>
-            <article className="bento-card glass span-12" style={{ flexDirection: "row", alignItems: "center", gap: 24, flexWrap: "wrap" }}>
-              <div className="bento-icon">📊</div>
-              <div>
-                <h3>Live stats in the app</h3>
-                <p style={{ margin: 0 }}>
-                  Total dictation time, words detected, average WPM, and estimated minutes saved —
-                  all in your dashboard after each session.
-                </p>
-              </div>
-            </article>
-          </div>
-        </section>
-
-        {/* 5 — Privacy */}
-        <section id="privacy" className="wrap">
-          <span className="section-label">Privacy</span>
-          <h2 className="section-title">Your voice stays yours</h2>
-          <p className="section-desc">
-            Designed with a clear rule: audio never hits our servers. Only text you choose to process.
-          </p>
-          <div className="privacy-grid">
-            {[
-              {
-                icon: "🔒",
-                title: "Audio never stored",
-                desc: "Speech is processed on-device for recognition. We never save recordings."
-              },
-              {
-                icon: "📝",
-                title: "Optional history",
-                desc: "Save cleaned text only if you turn history on. Delete anytime."
-              },
-              {
-                icon: "☁️",
-                title: "Secure accounts",
-                desc: "Sign in with Clerk. Your profile and preferences live in an encrypted database."
-              }
-            ].map((card) => (
-              <article key={card.title} className="bento-card glass">
-                <div className="bento-icon">{card.icon}</div>
-                <h3>{card.title}</h3>
-                <p>{card.desc}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        {/* 6 — Use anywhere bento */}
-        <section id="apps" className="wrap use-bento">
-          <span className="section-label">Everywhere</span>
-          <h2 className="section-title">One keyboard, every app</h2>
-          <p className="section-desc">
-            If it has a text field, HyperVoice works there.
-          </p>
-          <div className="bento" style={{ marginTop: 40 }}>
-            <article className="bento-card glass span-6">
-              <div className="bento-icon">💬</div>
-              <h3>Messaging</h3>
-              <p>WhatsApp, Messenger, Telegram, SMS — speak replies without switching apps.</p>
-            </article>
-            <article className="bento-card glass span-6">
-              <div className="bento-icon">📧</div>
-              <h3>Email & notes</h3>
-              <p>Draft formal emails and long notes with AI polish built in.</p>
-            </article>
-            <article className="bento-card glass span-4">
-              <div className="bento-icon">🔍</div>
-              <h3>Search & forms</h3>
-              <p>Fill forms and search boxes hands-free.</p>
-            </article>
-            <article className="bento-card glass span-4">
-              <div className="bento-icon">🧪</div>
-              <h3>Playground</h3>
-              <p>Test cleanup and rewrite modes inside the app before you dictate.</p>
-            </article>
-            <article className="bento-card glass span-4 bento-highlight">
-              <div className="bento-icon">🌍</div>
-              <h3>Works worldwide</h3>
-              <p>Cloud sync — use from any city once you install the APK.</p>
-            </article>
-          </div>
-        </section>
-
-        {/* 7 — Download CTA */}
-        <section id="download" className="download-section wrap">
-          <div className="cta-panel glass">
-            <span className="section-label">Download</span>
-            <h2>Ready to type with your voice?</h2>
-            <p>
-              Get the Android APK and join the HyperVoice beta. No Play Store required — install
-              directly and start dictating in minutes.
-            </p>
-            <a href={APK_DOWNLOAD_URL} className="btn btn-primary" id="apk-download">
+          <div className="hero-actions">
+            <a href={APK_DOWNLOAD_URL} className="btn btn-dark">
               <DownloadIcon />
-              Download HyperVoice APK
+              Download APK
             </a>
-            <p className="cta-note">
-              Android 8+ · Microphone permission required · Install from trusted sources
+            <a href="#features" className="btn btn-glass">
+              See features
+            </a>
+          </div>
+          <div className="trust-row" aria-label="Product highlights">
+            <span>No Play Store required</span>
+            <span>Public HTTPS backend</span>
+            <span>Android 8+</span>
+          </div>
+        </div>
+
+        <div className="hero-showcase" aria-label="HyperVoice product preview">
+          <div className="speed-card qwerty">
+            <span>QWERTY typing</span>
+            <strong>45 wpm</strong>
+            <div className="speed-line">
+              <i />
+            </div>
+          </div>
+          <div className="phone glass">
+            <div className="phone-top">
+              <Image src="/logo.png" alt="" width={38} height={38} />
+              <div>
+                <span>HyperVoice</span>
+                <small>Voice mode active</small>
+              </div>
+            </div>
+            <div className="dictation-panel">
+              <div className="wave" aria-hidden>
+                {Array.from({ length: 18 }).map((_, index) => (
+                  <span key={index} style={{ animationDelay: `${index * 0.06}s` }} />
+                ))}
+              </div>
+              <p className="spoken">Hey, make this sound more professional...</p>
+              <p className="cleaned">
+                Thank you for the update. I&apos;ll review everything today and send a polished
+                response shortly.
+              </p>
+            </div>
+            <div className="keyboard-preview" aria-hidden>
+              {["Q", "W", "E", "R", "T", "Y", "U", "I", "O"].map((key) => (
+                <span key={key}>{key}</span>
+              ))}
+              <button>mic</button>
+            </div>
+          </div>
+          <div className="speed-card voice">
+            <span>HyperVoice dictation</span>
+            <strong>130 wpm</strong>
+            <div className="speed-line">
+              <i />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="everywhere" className="section-shell logo-section">
+        <div className="section-kicker">Works everywhere you write</div>
+        <h2>One keyboard for every text box.</h2>
+        <div className="app-marquee" aria-label="Supported app examples">
+          <div className="app-track">
+            {[...apps, ...apps].map((app, index) => (
+              <span key={`${app}-${index}`}>{app}</span>
+            ))}
+          </div>
+        </div>
+        <div className="platform-tabs" aria-label="Platform availability">
+          <span className="active">Android</span>
+          <span>APK beta</span>
+          <span>Cloud sync</span>
+          <span>Any city</span>
+        </div>
+      </section>
+
+      <section id="features" className="feature-stack">
+        {features.map((feature, index) => (
+          <article key={feature.title} className="feature-row section-shell">
+            <div className="feature-copy">
+              <div className="section-kicker">{feature.eyebrow}</div>
+              <h2>{feature.title}</h2>
+              <p>{feature.body}</p>
+              <div className="chip-row">
+                {feature.points.map((point) => (
+                  <span key={point}>{point}</span>
+                ))}
+              </div>
+            </div>
+            <div className="feature-visual glass">
+              <div className={`mini-demo mini-demo-${index + 1}`}>
+                <div className="demo-header">
+                  <span />
+                  <span />
+                  <span />
+                </div>
+                <div className="demo-lines">
+                  <i />
+                  <i />
+                  <i />
+                </div>
+                <div className="demo-result">
+                  <strong>{feature.eyebrow}</strong>
+                  <p>{feature.points[0]}</p>
+                </div>
+              </div>
+            </div>
+          </article>
+        ))}
+      </section>
+
+      <section id="privacy" className="privacy section-shell">
+        <div>
+          <div className="section-kicker">Private by design</div>
+          <h2>Your voice stays on your phone.</h2>
+          <p>
+            HyperVoice sends text to the API for cleanup. Audio is not stored on our server, and
+            history can be turned off from the app.
+          </p>
+        </div>
+        <div className="privacy-grid">
+          <div className="glass">
+            <ShieldIcon />
+            <strong>Audio not stored</strong>
+            <span>Only text is processed for cleanup.</span>
+          </div>
+          <div className="glass">
+            <CloudIcon />
+            <strong>HTTPS API</strong>
+            <span>Production APKs use your public Vercel backend.</span>
+          </div>
+          <div className="glass">
+            <UserIcon />
+            <strong>User settings</strong>
+            <span>Dictionary, tone, and history preferences sync securely.</span>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-shell love-section">
+        <div className="section-kicker">Early feedback</div>
+        <h2>Built for people who reply all day.</h2>
+        <div className="testimonial-grid">
+          {testimonials.map((item) => (
+            <figure key={item.quote} className="glass testimonial">
+              <blockquote>&quot;{item.quote}&quot;</blockquote>
+              <figcaption>
+                <strong>{item.name}</strong>
+                <span>{item.role}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </section>
+
+      <section id="download" className="download section-shell">
+        <div className="download-panel glass">
+          <Image src="/logo.png" alt="" width={72} height={72} />
+          <div>
+            <div className="section-kicker">Download beta</div>
+            <h2>Free yourself from the keyboard.</h2>
+            <p>
+              Share the APK link with anyone. They install HyperVoice, sign in, enable the keyboard,
+              and use it from anywhere with internet access.
             </p>
           </div>
-        </section>
-      </main>
+          <a href={APK_DOWNLOAD_URL} className="btn btn-dark">
+            <DownloadIcon />
+            Download HyperVoice APK
+          </a>
+        </div>
+      </section>
 
-      <footer className="wrap">
-        <p>© {new Date().getFullYear()} HyperVoice · AI voice keyboard for Android</p>
+      <footer className="footer section-shell">
+        <span>HyperVoice</span>
+        <span>AI voice keyboard for Android</span>
       </footer>
-    </div>
+    </main>
   );
 }
 
 function DownloadIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden>
-      <path d="M12 3v12m0 0l4-4m-4 4L8 11" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" strokeLinecap="round" />
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path d="M12 3v11m0 0 4-4m-4 4-4-4" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function ShieldIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path d="M12 3 5 6v5c0 4.7 2.8 8.4 7 10 4.2-1.6 7-5.3 7-10V6l-7-3Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+      <path d="m9 12 2 2 4-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function CloudIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path d="M7 18h10a4 4 0 0 0 .4-8 6 6 0 0 0-11.2-1.8A5 5 0 0 0 7 18Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function UserIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path d="M20 21a8 8 0 0 0-16 0" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <path d="M12 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" stroke="currentColor" strokeWidth="2" />
     </svg>
   );
 }

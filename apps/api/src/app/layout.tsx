@@ -10,7 +10,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "HyperVoice — AI Voice Keyboard",
+  title: "HyperVoice - AI Voice Keyboard",
   description:
     "Dictate naturally in English, Bangla, or Hindi. HyperVoice cleans filler words, fixes grammar, and types for you in any app.",
   openGraph: {
@@ -27,3 +27,4 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     </html>
   );
 }
+
