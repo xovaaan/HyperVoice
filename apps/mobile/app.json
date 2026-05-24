@@ -34,7 +34,7 @@
       "expo-secure-store"
     ],
     "extra": {
-      "apiBaseUrl": "http://192.168.0.125:3001",
+      "apiBaseUrl": "Set EXPO_PUBLIC_API_BASE_URL before building the APK",
       "eas": {
         "projectId": "ab990b8c-f07c-432d-ae37-a8aebe0eaa91"
       }

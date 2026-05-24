@@ -1,5 +1,7 @@
 import Image from "next/image";
 
+const APK_DOWNLOAD_URL = process.env.NEXT_PUBLIC_APK_DOWNLOAD_URL || "/HyperVoice-release.apk";
+
 const NAV = [
   { href: "#features", label: "Features" },
   { href: "#how", label: "How it works" },
@@ -237,12 +239,12 @@ export default function LandingPage() {
               Get the Android APK and join the HyperVoice beta. No Play Store required — install
               directly and start dictating in minutes.
             </p>
-            <a href="#" className="btn btn-primary" id="apk-download">
+            <a href={APK_DOWNLOAD_URL} className="btn btn-primary" id="apk-download">
               <DownloadIcon />
               Download HyperVoice APK
             </a>
             <p className="cta-note">
-              APK link coming soon · Android 8+ · Microphone permission required
+              Android 8+ · Microphone permission required · Install from trusted sources
             </p>
           </div>
         </section>

@@ -29,7 +29,7 @@ export async function callOpenRouter(
     headers: {
       Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
-      "HTTP-Referer": "http://localhost:3001",
+      "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL ?? "https://hypervoice.app",
       "X-Title": "HyperVoice"
     },
     body: JSON.stringify({

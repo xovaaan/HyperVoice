@@ -12,6 +12,7 @@ import { api, type User } from "./lib/api";
 import { AppContext } from "./lib/appContext";
 import { saveUserId, syncNativeKeyboardSettings } from "./lib/storage";
 import { tokenCache } from "./lib/tokenCache";
+import { API_BASE_URL, CLERK_PUBLISHABLE_KEY, assertProductionConfig } from "./lib/config";
 
 import HomeScreen from "./screens/HomeScreen";
 import HistoryScreen from "./screens/HistoryScreen";
@@ -21,12 +22,8 @@ import AuthScreen from "./screens/AuthScreen";
 import OnboardingScreen from "./screens/OnboardingScreen";
 
 const Tab = createBottomTabNavigator();
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL || "http://192.168.0.125:3001";
-const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY || "pk_test_cGVyZmVjdC1zbmFpbC02MC5jbGVyay5hY2NvdW50cy5kZXYk";
 
-if (!CLERK_PUBLISHABLE_KEY) {
-  console.warn("Clerk Publishable Key is not set in environment. Please provide EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY.");
-}
+assertProductionConfig();
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 

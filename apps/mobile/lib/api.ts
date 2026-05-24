@@ -1,6 +1,5 @@
 import type { Language, Mode } from "./constants";
-
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL ?? "http://192.168.0.125:3001";
+import { API_BASE_URL } from "./config";
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const controller = new AbortController();

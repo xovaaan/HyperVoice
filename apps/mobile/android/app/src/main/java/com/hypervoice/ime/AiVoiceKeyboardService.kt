@@ -18,6 +18,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.hypervoice.R
+import com.hypervoice.BuildConfig
 import org.json.JSONObject
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
@@ -525,6 +526,6 @@ class AiVoiceKeyboardService : InputMethodService() {
     }
 
     companion object {
-        private const val DEFAULT_API_BASE_URL = "http://192.168.0.125:3001"
+        private val DEFAULT_API_BASE_URL = BuildConfig.HYPERVOICE_API_BASE_URL
     }
 }
