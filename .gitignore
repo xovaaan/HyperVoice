@@ -1,0 +1,52 @@
+node_modules/
+.idea/
+_apk_inspect/
+*.apk
+.next/
+.expo/
+dist/
+build/
+.env
+.env.local
+apps/api/.env
+apps/mobile/.env
+*.keystore
+*.jks
+android/.gradle/
+android/build/
+android/app/build/
+apps/mobile/android/.gradle/
+apps/mobile/android/build/
+apps/mobile/android/app/build/
+
+# Logs
+*.log
+
+# Cache
+.cache/
+tmp/
+temp/
+
+# Expo
+.expo-shared/
+
+# Next
+.next/cache/
+
+# Media
+*.mp4
+*.wav
+*.aac
+*.m4a
+
+# Archives
+*.zip
+*.tar.gz
+
+# Database
+*.db
+*.sqlite
+
+# Mac/Windows
+.DS_Store
+Thumbs.db

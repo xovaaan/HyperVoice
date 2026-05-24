@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String           @id @default(cuid())
+  deviceId        String           @unique
+  email           String?
+  displayName     String?
+  lastSignedInAt  DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  saveHistory     Boolean          @default(true)
+  defaultLanguage String           @default("en-US")
+  defaultMode     String           @default("cleanup")
+  textEntries     TextEntry[]
+  dictionaryWords DictionaryWord[]
+  apiUsages       ApiUsage[]
+}
+
+model TextEntry {
+  id            String   @id @default(cuid())
+  userId        String
+  rawTranscript String
+  finalText     String
+  mode          String
+  language      String
+  sourceApp     String?
+  durationSec   Int?
+  createdAt     DateTime @default(now())
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
+
+model DictionaryWord {
+  id        String   @id @default(cuid())
+  userId    String
+  word      String
+  hint      String?
+  category  String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, word])
+}
+
+model ApiUsage {
+  id        String   @id @default(cuid())
+  userId    String?
+  provider  String
+  model     String
+  endpoint  String
+  success   Boolean
+  latencyMs Int?
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+}

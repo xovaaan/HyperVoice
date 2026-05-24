@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "HyperVoice",
+    "slug": "hypervoice",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./logoo.png",
+    "userInterfaceStyle": "light",
+    "scheme": "hypervoice",
+    "platforms": [
+      "android"
+    ],
+    "android": {
+      "package": "com.hypervoice",
+      "usesCleartextTraffic": true,
+      "permissions": [
+        "RECORD_AUDIO",
+        "INTERNET"
+      ],
+      "blockedPermissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.SYSTEM_ALERT_WINDOW"
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./logoo.png",
+        "backgroundColor": "#FFFFFF"
+      }
+    },
+    "plugins": [
+      "./plugins/withHyperVoiceIme",
+      "expo-web-browser",
+      "expo-splash-screen",
+      "expo-secure-store"
+    ],
+    "extra": {
+      "apiBaseUrl": "http://192.168.0.125:3001",
+      "eas": {
+        "projectId": "ab990b8c-f07c-432d-ae37-a8aebe0eaa91"
+      }
+    },
+    "owner": "xsamiur"
+  }
+}

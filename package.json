@@ -1,0 +1,32 @@
+{
+  "name": "hypervoice",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/api",
+    "apps/mobile"
+  ],
+  "scripts": {
+    "dev:api": "npm --workspace apps/api run dev",
+    "dev:web": "npm --workspace apps/api run dev",
+    "build:api": "npm --workspace apps/api run build",
+    "lint:api": "npm --workspace apps/api run lint",
+    "prisma:generate": "npm --workspace apps/api run prisma:generate",
+    "prisma:migrate": "npm --workspace apps/api run prisma:migrate",
+    "mobile:start": "npm --workspace apps/mobile run start",
+    "mobile:android": "npm --workspace apps/mobile run android",
+    "mobile:apk": "npm --workspace apps/mobile run build:apk"
+  },
+  "overrides": {
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
+  },
+  "dependencies": {
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "@clerk/clerk-react": "^5.61.6",
+    "@clerk/clerk-js": "^5.125.10",
+    "@clerk/shared": "^3.47.5",
+    "@clerk/types": "^4.101.20"
+  }
+}
