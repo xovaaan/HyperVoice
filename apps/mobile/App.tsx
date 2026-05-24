@@ -1,5 +1,5 @@
 import React, { Component, useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, Alert, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
@@ -54,6 +54,8 @@ function MainAppContent() {
   const [checkingOnboarding, setCheckingOnboarding] = useState(true);
   const [appUser, setAppUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
+  const [syncError, setSyncError] = useState<string | null>(null);
+  const [syncAttempt, setSyncAttempt] = useState(0);
 
   // 1. Check onboarding status on startup
   useEffect(() => {
@@ -77,6 +79,7 @@ function MainAppContent() {
     let mounted = true;
     async function initBackendUser() {
       setLoading(true);
+      setSyncError(null);
       try {
         // Map the Clerk userId directly as the deviceId in our schema
         const result = await api.initUser({
@@ -87,6 +90,7 @@ function MainAppContent() {
         if (!mounted) return;
         await saveUserId(result.user.id);
         setAppUser(result.user);
+        setSyncError(null);
         syncNativeKeyboardSettings({
           userId: result.user.id,
           apiBaseUrl: API_BASE_URL,
@@ -97,9 +101,10 @@ function MainAppContent() {
       } catch (err) {
         console.warn("Backend user sync failed", err);
         if (mounted) {
-          Alert.alert(
-            "Sync failed",
-            err instanceof Error ? err.message : "Could not connect to HyperVoice server. Check API URL and try again."
+          setSyncError(
+            err instanceof Error
+              ? err.message
+              : "Could not connect to HyperVoice server. Check API URL and try again."
           );
         }
       } finally {
@@ -110,7 +115,7 @@ function MainAppContent() {
     return () => {
       mounted = false;
     };
-  }, [isSignedIn, clerkUserId, clerkUser?.primaryEmailAddress?.emailAddress, clerkUser?.fullName, clerkUser?.firstName]);
+  }, [isSignedIn, clerkUserId, clerkUser?.primaryEmailAddress?.emailAddress, clerkUser?.fullName, clerkUser?.firstName, syncAttempt]);
 
   const contextValue = useMemo(() => ({
     user: appUser,
@@ -140,6 +145,21 @@ function MainAppContent() {
     return <AuthScreen onAuthSuccess={() => {}} />;
   }
 
+  if (!appUser && syncError) {
+    return (
+      <View style={styles.center}>
+        <Text style={styles.errorTitle}>Could not sync your account</Text>
+        <Text style={styles.errorText}>{syncError}</Text>
+        <Pressable style={styles.retryButton} onPress={() => setSyncAttempt((value) => value + 1)}>
+          <Text style={styles.retryButtonText}>Try again</Text>
+        </Pressable>
+        <Text style={styles.hintText}>
+          If this is your first deploy, wait a few seconds for the server to wake up.
+        </Text>
+      </View>
+    );
+  }
+
   if (!onboardingCompleted) {
     return (
       <OnboardingScreen
@@ -160,6 +180,11 @@ function MainAppContent() {
             <ActivityIndicator color="#111111" size="small" />
             <Text style={styles.syncText}>Syncing keyboard settings</Text>
           </View>
+        ) : null}
+        {syncError ? (
+          <Pressable style={styles.syncErrorBanner} onPress={() => setSyncAttempt((value) => value + 1)}>
+            <Text style={styles.syncErrorText}>Sync paused. Tap to retry.</Text>
+          </Pressable>
         ) : null}
         <Tab.Navigator
           screenOptions={{
@@ -291,5 +316,42 @@ const styles = StyleSheet.create({
     color: "#666666",
     textAlign: "center",
     lineHeight: 22
+  },
+  retryButton: {
+    minHeight: 48,
+    borderRadius: 24,
+    paddingHorizontal: 22,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#111111"
+  },
+  retryButtonText: {
+    color: "#FFFFFF",
+    fontSize: 15,
+    fontWeight: "800"
+  },
+  hintText: {
+    maxWidth: 280,
+    color: "#888888",
+    fontSize: 13,
+    textAlign: "center",
+    lineHeight: 19
+  },
+  syncErrorBanner: {
+    position: "absolute",
+    top: 84,
+    alignSelf: "center",
+    zIndex: 20,
+    minHeight: 36,
+    borderRadius: 18,
+    paddingHorizontal: 14,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#111111"
+  },
+  syncErrorText: {
+    color: "#FFFFFF",
+    fontWeight: "800",
+    fontSize: 13
   }
 });

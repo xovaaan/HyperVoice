@@ -1,23 +1,64 @@
 import type { Language, Mode } from "./constants";
 import { API_BASE_URL } from "./config";
 
-async function request<T>(path: string, options?: RequestInit): Promise<T> {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 8000);
-  const res = await fetch(`${API_BASE_URL}${path}`, {
-    ...options,
-    signal: controller.signal,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers
-    }
-  }).finally(() => clearTimeout(timeout));
+type ApiRequestInit = RequestInit & {
+  timeoutMs?: number;
+};
 
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    throw new Error(data.error ?? `Request failed: ${res.status}`);
+const DEFAULT_TIMEOUT_MS = 30000;
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function friendlyRequestError(error: unknown) {
+  if (error instanceof DOMException && error.name === "AbortError") {
+    return new Error("The HyperVoice server took too long to respond. Please try again in a moment.");
   }
-  return data as T;
+  if (error instanceof Error && error.name === "AbortError") {
+    return new Error("The HyperVoice server took too long to respond. Please try again in a moment.");
+  }
+  return error;
+}
+
+async function request<T>(path: string, options?: ApiRequestInit): Promise<T> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), options?.timeoutMs ?? DEFAULT_TIMEOUT_MS);
+  try {
+    const res = await fetch(`${API_BASE_URL}${path}`, {
+      ...options,
+      signal: controller.signal,
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers
+      }
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.error ?? `Request failed: ${res.status}`);
+    }
+    return data as T;
+  } catch (error) {
+    throw friendlyRequestError(error);
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function requestWithRetry<T>(path: string, options?: ApiRequestInit, attempts = 2): Promise<T> {
+  let lastError: unknown;
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    try {
+      return await request<T>(path, options);
+    } catch (error) {
+      lastError = error;
+      if (attempt < attempts - 1) {
+        await sleep(900);
+      }
+    }
+  }
+  throw lastError;
 }
 
 export type User = {
@@ -51,10 +92,11 @@ export type DictionaryWord = {
 
 export const api = {
   initUser(input: { deviceId: string; email?: string | null; displayName?: string | null }) {
-    return request<{ user: User }>("/api/users/init", {
+    return requestWithRetry<{ user: User }>("/api/users/init", {
       method: "POST",
-      body: JSON.stringify(input)
-    });
+      body: JSON.stringify(input),
+      timeoutMs: 45000
+    }, 2);
   },
   cleanup(input: {
     userId: string;

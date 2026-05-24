@@ -131,7 +131,7 @@ class AiVoiceKeyboardService : InputMethodService() {
             val rowView = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER
-                setPadding(if (rowIndex == 1 && !isEmoji) 24 else 0, 8, if (rowIndex == 1 && !isEmoji) 24 else 0, 8)
+                setPadding(if (rowIndex == 1 && !isEmoji) dp(18) else 0, dp(5), if (rowIndex == 1 && !isEmoji) dp(18) else 0, dp(5))
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
@@ -170,7 +170,12 @@ class AiVoiceKeyboardService : InputMethodService() {
 
         return Button(this).apply {
             text = displayLabel
-            textSize = if (isSpecial || isReturn) 17f else 22f
+            textSize = when {
+                isReturn -> 28f
+                isSpace -> 28f
+                isSpecial -> 24f
+                else -> 32f
+            }
             typeface = Typeface.DEFAULT
             isAllCaps = false
             minWidth = 0
@@ -184,17 +189,17 @@ class AiVoiceKeyboardService : InputMethodService() {
             })
             layoutParams = LinearLayout.LayoutParams(
                 0,
-                if (isSpace || isReturn) dp(56) else dp(58),
+                if (isSpace || isReturn) dp(66) else dp(68),
                 when {
-                    isSpace -> 4.5f
-                    key == "123" -> 2.2f
-                    isReturn -> 2.2f
+                    isSpace -> 4.8f
+                    key == "123" -> 2.4f
+                    isReturn -> 2.4f
                     key == "😊" -> 1.4f
-                    isSpecial -> 1.4f
+                    isSpecial -> 1.35f
                     else -> 1f
                 }
             ).apply {
-                setMargins(3, 0, 3, 0)
+                setMargins(dp(3), 0, dp(3), 0)
             }
             setOnClickListener { handleKey(key) }
         }

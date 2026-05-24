@@ -28,8 +28,13 @@ export default function HomeScreen() {
 
   const loadStats = useCallback(async () => {
     if (!user) return;
-    const result = await api.history(user.id);
-    setItems(result.items);
+    try {
+      const result = await api.history(user.id);
+      setItems(result.items);
+    } catch (error) {
+      console.warn("Could not load dashboard stats", error);
+      setItems([]);
+    }
   }, [user]);
 
   useFocusEffect(
