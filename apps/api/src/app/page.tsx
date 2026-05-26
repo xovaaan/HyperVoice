@@ -2,53 +2,113 @@ import Image from "next/image";
 
 const APK_DOWNLOAD_URL = process.env.NEXT_PUBLIC_APK_DOWNLOAD_URL || "/HyperVoice-release.apk";
 
-const logoCloud = [
-  { name: "OpenRouter", src: "https://unpkg.com/@lobehub/icons-static-svg@latest/icons/openrouter.svg" },
-  { name: "NVIDIA", src: "https://unpkg.com/@lobehub/icons-static-svg@latest/icons/nvidia.svg" },
-  { name: "Meta", src: "https://unpkg.com/@lobehub/icons-static-svg@latest/icons/meta.svg" },
-  { name: "Google", src: "https://unpkg.com/@lobehub/icons-static-svg@latest/icons/google.svg" },
-  { name: "Vercel", src: "https://unpkg.com/@lobehub/icons-static-svg@latest/icons/vercel.svg" },
-  { name: "Neon", src: "https://unpkg.com/@lobehub/icons-static-svg@latest/icons/neon.svg" },
-  { name: "Android", src: "https://cdn.simpleicons.org/android/3DDC84" },
-  { name: "GitHub", src: "https://cdn.simpleicons.org/github/181717" }
+const appLogos = [
+  ["Facebook", "https://cdn.simpleicons.org/facebook/0866FF"],
+  ["Instagram", "https://cdn.simpleicons.org/instagram/E4405F"],
+  ["Messenger", "https://cdn.simpleicons.org/messenger/0866FF"],
+  ["WhatsApp", "https://cdn.simpleicons.org/whatsapp/25D366"],
+  ["Telegram", "https://cdn.simpleicons.org/telegram/26A5E4"],
+  ["Gmail", "https://cdn.simpleicons.org/gmail/EA4335"],
+  ["Outlook", "https://cdn.simpleicons.org/microsoftoutlook/0078D4"],
+  ["Slack", "https://cdn.simpleicons.org/slack/4A154B"],
+  ["Discord", "https://cdn.simpleicons.org/discord/5865F2"],
+  ["LinkedIn", "https://cdn.simpleicons.org/linkedin/0A66C2"],
+  ["X", "https://cdn.simpleicons.org/x/111111"],
+  ["Reddit", "https://cdn.simpleicons.org/reddit/FF4500"],
+  ["Notion", "https://cdn.simpleicons.org/notion/111111"],
+  ["Google Docs", "https://cdn.simpleicons.org/googledocs/4285F4"],
+  ["Google Keep", "https://cdn.simpleicons.org/googlekeep/FFBB00"],
+  ["Evernote", "https://cdn.simpleicons.org/evernote/00A82D"],
+  ["Trello", "https://cdn.simpleicons.org/trello/0052CC"],
+  ["Asana", "https://cdn.simpleicons.org/asana/F06A6A"],
+  ["Jira", "https://cdn.simpleicons.org/jira/0052CC"],
+  ["Linear", "https://cdn.simpleicons.org/linear/5E6AD2"],
+  ["ChatGPT", "https://unpkg.com/@lobehub/icons-static-svg@latest/icons/openai.svg"],
+  ["Claude", "https://unpkg.com/@lobehub/icons-static-svg@latest/icons/claude.svg"],
+  ["Gemini", "https://unpkg.com/@lobehub/icons-static-svg@latest/icons/gemini.svg"],
+  ["Perplexity", "https://unpkg.com/@lobehub/icons-static-svg@latest/icons/perplexity.svg"],
+  ["Google Chrome", "https://cdn.simpleicons.org/googlechrome/4285F4"],
+  ["Microsoft Edge", "https://cdn.simpleicons.org/microsoftedge/0078D7"],
+  ["Shopify", "https://cdn.simpleicons.org/shopify/7AB55C"],
+  ["WordPress", "https://cdn.simpleicons.org/wordpress/21759B"],
+  ["YouTube", "https://cdn.simpleicons.org/youtube/FF0000"],
+  ["TikTok", "https://cdn.simpleicons.org/tiktok/111111"],
+  ["Snapchat", "https://cdn.simpleicons.org/snapchat/FFFC00"],
+  ["GitHub", "https://cdn.simpleicons.org/github/181717"],
+  ["Vercel", "https://unpkg.com/@lobehub/icons-static-svg@latest/icons/vercel.svg"],
+  ["Neon", "https://cdn.simpleicons.org/neon/00E599"],
+  ["Android", "https://cdn.simpleicons.org/android/3DDC84"],
+  ["OpenRouter", "https://unpkg.com/@lobehub/icons-static-svg@latest/icons/openrouter.svg"]
 ];
 
-const features = [
+const modelLogos = [
+  ["Whisper V3 Turbo", "https://unpkg.com/@lobehub/icons-static-svg@latest/icons/openai.svg", "Fast multilingual speech recognition"],
+  ["NVIDIA Nemotron", "https://unpkg.com/@lobehub/icons-static-svg@latest/icons/nvidia.svg", "High quality cleanup and rewriting"],
+  ["Llama 3.3", "https://unpkg.com/@lobehub/icons-static-svg@latest/icons/meta.svg", "Reliable fallback editing model"],
+  ["OpenRouter", "https://unpkg.com/@lobehub/icons-static-svg@latest/icons/openrouter.svg", "One API for model routing"]
+];
+
+const languages = [
+  "English", "Bangla", "Hindi", "Spanish", "French", "German", "Italian", "Portuguese", "Arabic", "Chinese",
+  "Japanese", "Korean", "Russian", "Turkish", "Indonesian", "Malay", "Thai", "Vietnamese", "Urdu", "Tamil",
+  "Telugu", "Marathi", "Dutch", "Polish", "Ukrainian", "Greek", "Hebrew", "Persian", "Swedish", "Norwegian",
+  "Danish", "Finnish", "Czech", "Romanian", "Hungarian", "Bulgarian", "Croatian", "Serbian", "Slovak", "Slovenian",
+  "Lithuanian", "Latvian", "Estonian", "Filipino", "Swahili", "Afrikaans", "Albanian", "Amharic", "Armenian", "Azerbaijani",
+  "Basque", "Belarusian", "Bosnian", "Burmese", "Catalan", "Cebuano", "Chichewa", "Corsican", "Esperanto", "Frisian",
+  "Galician", "Georgian", "Gujarati", "Haitian Creole", "Hausa", "Hawaiian", "Hmong", "Icelandic", "Igbo", "Irish",
+  "Javanese", "Kannada", "Kazakh", "Khmer", "Kinyarwanda", "Kurdish", "Kyrgyz", "Lao", "Latin", "Luxembourgish",
+  "Macedonian", "Malagasy", "Malayalam", "Maltese", "Maori", "Mongolian", "Nepali", "Odia", "Pashto", "Punjabi",
+  "Samoan", "Scots Gaelic", "Sesotho", "Shona", "Sindhi", "Sinhala", "Somali", "Sundanese", "Tajik", "Uzbek",
+  "Welsh", "Xhosa", "Yiddish", "Yoruba", "Zulu"
+];
+
+const cleanupFeatures = [
   {
-    title: "Removes filler words",
-    body: "Automatically removes filler words like um, uh, like, and you know, making your transcriptions clear and professional.",
-    before: "Um, what's the plan for today, um, like, just to confirm?",
-    after: "What's the plan for today? Just to confirm.",
+    title: "Cuts the noisy bits",
+    body: "HyperVoice trims hesitation, repeated starts, and accidental side comments before the text appears.",
+    before: "Okay so, I need the report by, wait, not report, the launch notes by Friday morning please.",
+    after: "I need the launch notes by Friday morning, please.",
     color: "mint"
   },
   {
-    title: "Removes repetition",
-    body: "Detects repeated words and repeated thoughts in your speech, keeping the final sentence concise and easy to understand.",
-    before: "I think we should maybe we should move it to tomorrow because today is kind of, kind of packed.",
-    after: "I think we should move it to tomorrow because today is kind of packed.",
+    title: "Understands questions",
+    body: "When your voice sounds like a question, the final text lands with the right punctuation and wording.",
+    before: "Can you check if the invoice has been approved",
+    after: "Can you check if the invoice has been approved?",
     color: "blue"
   },
   {
-    title: "Auto-edits when you change your mind",
-    body: "Recognizes mid-sentence corrections and keeps only your final intended message.",
-    before: "How about we meet tomorrow at, um, 7 am? Oh, actually, let's do 3 pm.",
-    after: "How about we meet tomorrow at 3 pm.",
+    title: "Tidies changing thoughts",
+    body: "If you correct yourself mid-sentence, HyperVoice keeps the final idea instead of the whole spoken trail.",
+    before: "Book it for Thursday afternoon, actually make it Friday after lunch.",
+    after: "Book it for Friday after lunch.",
     color: "gold"
   },
   {
-    title: "Auto-formats",
-    body: "Turns spoken lists, steps, phone numbers, and short messages into structured text that reads like you typed it carefully.",
-    before: "Hi Anna my new phone number is 4081234567 thanks Jack",
-    after: "Hi Anna,\n\nMy new phone number is (408) 123-4567.\n\nThanks,\nJack",
+    title: "Builds clean formats",
+    body: "Notes, lists, emails, and updates can become structured text without opening another editor.",
+    before: "Client update blockers design files pending next step send revised deck tomorrow",
+    after: "Client update:\n\n- Blocker: design files pending\n- Next step: send revised deck tomorrow",
     color: "rose"
-  },
-  {
-    title: "Translates as you speak",
-    body: "Translate speech into your chosen language with phrasing that reads like a local would write it.",
-    before: "Here's the product info, the price is 9 dollars, the size is 30, and we offer free returns.",
-    after: "Aqui tienes la informacion del producto:\n\n1. El precio es de $9\n2. El tamano es 30\n3. Ofrecemos devoluciones gratuitas",
-    color: "sand"
   }
+];
+
+const useCases = [
+  ["Creators", "Draft captions, replies, hooks, and comments without tapping out every sentence."],
+  ["Students", "Capture study notes, questions, and summaries while your thoughts are still fresh."],
+  ["Sales teams", "Send polished follow-ups, CRM notes, and client messages between calls."],
+  ["Founders", "Move from idea to message, email, task, or AI prompt while walking or commuting."],
+  ["Support agents", "Answer common customer questions faster with cleaner tone and fewer typos."],
+  ["Multilingual users", "Speak in one language and prepare a clean message in another."]
+];
+
+const faqs = [
+  ["Do users need the same Wi-Fi?", "No. The APK talks to your public Vercel API, so users can use HyperVoice from any city with internet."],
+  ["Is this a Play Store app?", "No. You can distribute the APK directly from your landing page or GitHub release."],
+  ["Does it store audio?", "The app is designed around text cleanup. Audio is not saved by the landing page or API history."],
+  ["Can it work inside any app?", "Yes. Once the Android keyboard is enabled, it can type into normal text fields across apps."],
+  ["What powers the AI?", "The backend uses OpenRouter model routing, with speech and editing experiences presented around latest model workflows."],
+  ["Can pricing change later?", "Yes. These tiers are landing-page packaging and can be connected to billing when you are ready."]
 ];
 
 export default function LandingPage() {
@@ -60,150 +120,173 @@ export default function LandingPage() {
             <Image src="/logo.png" alt="" width={38} height={38} priority />
             <span>HyperVoice</span>
           </a>
-          <div className="nav-links" aria-label="Primary navigation">
-            <a href="#speed">Speed</a>
-            <a href="#features">AI editing</a>
-            <a href="#voice">Voice</a>
-            <a href="#download">Download</a>
+          <div className="nav-links">
+            <a href="#anywhere">Use Anywhere</a>
+            <a href="#languages">Languages</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#faq">FAQ</a>
           </div>
-          <a href={APK_DOWNLOAD_URL} className="btn btn-dark">
-            Download APK
-          </a>
+          <a href={APK_DOWNLOAD_URL} className="btn btn-dark nav-download">APK</a>
         </nav>
       </header>
 
       <section id="top" className="hero">
         <div className="dither-bg" aria-hidden />
         <div className="hero-inner section-shell">
-          <div className="hero-copy">
-            <p className="eyebrow">Android AI voice keyboard</p>
-            <h1>
-              Type 4x faster
-              <span>with your voice.</span>
-            </h1>
-            <p className="hero-text">
-              HyperVoice turns natural speech into clean messages, questions, lists, translations,
-              and polished replies inside every Android text box.
-            </p>
-            <div className="hero-actions">
-              <a href={APK_DOWNLOAD_URL} className="btn btn-dark">Download HyperVoice</a>
-              <a href="#features" className="btn btn-light">See AI cleanup</a>
-            </div>
-            <div className="hero-proof">
-              <span>220 WPM dictation</span>
-              <span>23 languages</span>
-              <span>No Play Store needed</span>
-            </div>
+          <p className="eyebrow">AI keyboard for people who think out loud</p>
+          <h1>
+            Turn speech into polished text
+            <span>before your thumb catches up.</span>
+          </h1>
+          <p className="hero-text">
+            HyperVoice is an Android voice keyboard that drafts, cleans, translates, formats, and
+            sends text anywhere you can type.
+          </p>
+          <a href={APK_DOWNLOAD_URL} className="btn btn-dark hero-download">Download HyperVoice APK</a>
+          <div className="hero-proof">
+            <span>Voice-first writing</span>
+            <span>OpenRouter AI cleanup</span>
+            <span>Direct APK install</span>
           </div>
-          <PhoneMock />
+          <HeroPhone />
         </div>
       </section>
 
-      <section className="logo-section section-shell" aria-label="Works with popular apps">
-        <p className="section-kicker">Powered by modern production tools</p>
-        <div className="logo-cloud">
-          {logoCloud.map((item) => (
-            <span key={item.name}>
-              <img src={item.src} alt="" />
-              {item.name}
-            </span>
-          ))}
+      <section id="anywhere" className="marquee-section">
+        <div className="section-heading section-shell">
+          <p className="section-kicker">Use Anywhere</p>
+          <h2>One keyboard. Your daily apps.</h2>
+          <p>Chat, email, notes, AI tools, social posts, tasks, documents, and support replies all get the same voice-powered typing layer.</p>
         </div>
-        <p className="logo-note">
-          AI and infrastructure logos use the Lobe Icons static CDN; Android and GitHub use public Simple Icons fallbacks.
-        </p>
+        <LogoMarquee direction="left" />
+        <LogoMarquee direction="right" />
       </section>
 
-      <section id="speed" className="speed-section section-shell">
-        <div className="speed-card qwerty-card">
-          <div className="speed-head">
-            <strong>QWERTY keyboard</strong>
-            <span><b>45</b> wpm</span>
-          </div>
-          <div className="small-note">You speak faster than you type</div>
-          <div className="tiny-keyboard" aria-hidden>
-            {Array.from({ length: 24 }).map((_, index) => <i key={index} />)}
+      <section className="bento section-shell">
+        <div className="bento-large">
+          <p className="section-kicker">Speed without rough edges</p>
+          <h2>Say it once. Ship the cleaned version.</h2>
+          <p>HyperVoice removes the cleanup work that normally comes after dictation.</p>
+          <div className="metric-row">
+            <span><b>4x</b> faster drafting</span>
+            <span><b>0</b> app switching</span>
+            <span><b>1</b> keyboard</span>
           </div>
         </div>
-        <div className="speed-card voice-card">
-          <div className="speed-head">
-            <strong>HyperVoice voice keyboard</strong>
-            <span><b>220</b> wpm</span>
-            <strong>Save</strong>
-            <span><b>1 day</b> / week</span>
-          </div>
-          <div className="speed-message">
-            You speak faster than you type. You think faster when you speak. HyperVoice removes the friction so your thoughts flow freely.
-          </div>
-          <div className="pill-recorder" aria-hidden>
-            {Array.from({ length: 11 }).map((_, index) => <i key={index} />)}
-          </div>
+        <div className="bento-card">
+          <VoiceGlyph />
+          <h3>Question-aware</h3>
+          <p>Speech that asks something becomes a question, not a flat sentence.</p>
+        </div>
+        <div className="bento-card dark">
+          <h3>Tap mic</h3>
+          <div className="mini-wave">{Array.from({ length: 18 }).map((_, index) => <i key={index} />)}</div>
+          <p>Animated waves show active listening while text is being prepared.</p>
         </div>
       </section>
 
       <section id="features" className="feature-list">
-        {features.map((feature) => (
+        <div className="section-heading section-shell">
+          <p className="section-kicker">AI cleanup</p>
+          <h2>Different examples, same useful magic.</h2>
+        </div>
+        {cleanupFeatures.map((feature) => (
           <article key={feature.title} className="feature-row section-shell">
             <div className="feature-copy">
               <h2>{feature.title}</h2>
               <p>{feature.body}</p>
             </div>
             <div className={`feature-demo ${feature.color}`}>
-              <div className="bubble before">
-                <VoiceGlyph />
-                <p>{feature.before}</p>
-              </div>
-              <div className="bubble after">
-                <p>{feature.after}</p>
-              </div>
+              <div className="bubble before"><VoiceGlyph /><p>{feature.before}</p></div>
+              <div className="bubble after"><p>{feature.after}</p></div>
             </div>
           </article>
         ))}
       </section>
 
-      <section id="voice" className="voice-section section-shell">
-        <div>
-          <p className="section-kicker">Live voice waves</p>
-          <h2>Tap the mic. Watch speech become finished text.</h2>
-          <p>
-            While you speak, HyperVoice shows active voice waves, streams partial text, then uses
-            OpenRouter AI to remove filler words, fix punctuation, and format the final message.
-          </p>
+      <section id="languages" className="languages section-shell">
+        <div className="section-heading">
+          <p className="section-kicker">100+ languages</p>
+          <h2>Speak globally, write naturally.</h2>
+          <p>Designed as a multilingual keyboard experience for global teams, creators, students, and families.</p>
         </div>
-        <div className="large-wave" aria-hidden>
-          {Array.from({ length: 46 }).map((_, index) => (
-            <span key={index} style={{ animationDelay: `${index * 0.035}s` }} />
+        <div className="language-cloud">
+          {languages.map((language) => <span key={language}>{language}</span>)}
+        </div>
+      </section>
+
+      <section className="workflow-grid section-shell">
+        <WorkflowCard
+          title="Faster work with AI Apps"
+          body="Dictate longer prompts for ChatGPT, Claude, Gemini, and Perplexity, then let HyperVoice clean the instruction before sending."
+          sample="Create a launch checklist for the APK release, include risks, QA, and announcement copy."
+        />
+        <WorkflowCard
+          title="Faster work with Email"
+          body="Talk through a reply, and HyperVoice turns it into a clear note with greeting, context, next steps, and sign-off."
+          sample="Hi team, quick update: Android build passed, release asset is ready, and Vercel is live."
+        />
+      </section>
+
+      <section className="model-section section-shell">
+        <div className="section-heading">
+          <p className="section-kicker">Powered By Latest Models</p>
+          <h2>Speech and rewriting on a modern AI stack.</h2>
+        </div>
+        <div className="model-grid">
+          {modelLogos.map(([name, src, body]) => (
+            <div className="model-card glass" key={name}>
+              <img src={src} alt="" />
+              <h3>{name}</h3>
+              <p>{body}</p>
+            </div>
           ))}
         </div>
       </section>
 
-      <section className="iphone-section section-shell">
-        <div className="iphone-copy">
-          <p className="section-kicker">Keyboard-first UX</p>
-          <h2>A normal-size keyboard with AI inside.</h2>
-          <p>
-            The Android keyboard now stays closer to Gboard height on common phones, scales with the
-            screen, supports long-press delete, and includes 23 speech languages.
-          </p>
+      <section className="iphone-3d section-shell">
+        <div className="iphone-scene">
+          <div className="iphone-device">
+            <div className="iphone-screen">
+              <div className="screen-title">Field note</div>
+              <p className="type-line">Drafting a polished update for the team...</p>
+              <div className="screen-wave">{Array.from({ length: 28 }).map((_, index) => <i key={index} />)}</div>
+              <div className="screen-output">The Android build is complete. I will upload the APK and share the release link today.</div>
+            </div>
+          </div>
         </div>
-        <div className="iphone-frame" aria-label="Phone preview with keyboard">
-          <div className="phone-doc">
-            <strong>Goals & Success Metrics</strong>
-            <p>Enable users to manage work faster with short voice sessions.</p>
-            <ul>
-              <li>DAU above 25% of total installs</li>
-              <li>At least 3 sessions per active user</li>
-              <li>Questions and exclamations auto-punctuated</li>
-            </ul>
-          </div>
-          <div className="phone-input">Message</div>
-          <div className="voice-pad">
-            <div className="round-mic"><VoiceGlyph /></div>
-          </div>
-          <div className="keyboard-large">
-            {"QWERTYUIOPASDFGHJKLZXCVBNM".split("").map((key) => <span key={key}>{key}</span>)}
-            <button>123</button><button>EN</button><button>Return</button>
-          </div>
+        <div className="iphone-copy">
+          <p className="section-kicker">Animated voice typing</p>
+          <h2>A 3D phone moment built for the landing page.</h2>
+          <p>Sound waves, a typewriting line, and a floating iPhone-style frame show exactly what the app does without copying another product page.</p>
+        </div>
+      </section>
+
+      <section className="use-cases section-shell">
+        <div className="section-heading">
+          <p className="section-kicker">Use cases</p>
+          <h2>Useful wherever words are work.</h2>
+        </div>
+        <div className="use-grid">
+          {useCases.map(([title, body]) => (
+            <div className="use-card" key={title}>
+              <h3>{title}</h3>
+              <p>{body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="pricing" className="pricing section-shell">
+        <div className="section-heading">
+          <p className="section-kicker">Pricing</p>
+          <h2>Start free. Upgrade when teams ask for it.</h2>
+        </div>
+        <div className="pricing-grid">
+          <PriceCard name="Free" price="$0" body="For early testers and personal APK installs." items={["AI cleanup trial", "Basic history", "Direct APK access"]} />
+          <PriceCard name="Starter" price="$5/user" body="For people who write and reply all day." items={["More cleanup usage", "Translations", "Personal dictionary"]} />
+          <PriceCard name="Pro" price="$10/user" body="For power users and small teams." items={["Priority AI models", "Team-ready settings", "Advanced formatting"]} featured />
+          <PriceCard name="Custom" price="Custom" body="For organizations that need volume, support, or private deployment." items={["Custom limits", "Admin support", "Deployment help"]} />
         </div>
       </section>
 
@@ -211,21 +294,41 @@ export default function LandingPage() {
         <div className="download-panel glass">
           <Image src="/logo.png" alt="" width={68} height={68} />
           <div>
-            <p className="section-kicker">Production-ready sharing</p>
-            <h2>Deploy the API, share the APK, and anyone can use it.</h2>
-            <p>
-              Users do not need your Wi-Fi. They install the shared APK, sign in, enable the
-              keyboard, and HyperVoice talks to your public Vercel backend.
-            </p>
+            <p className="section-kicker">Install without the Play Store</p>
+            <h2>Share the APK from this page.</h2>
+            <p>Users install HyperVoice, enable the Android keyboard, sign in, and start writing with your live Vercel backend.</p>
           </div>
           <a href={APK_DOWNLOAD_URL} className="btn btn-dark">Download APK</a>
         </div>
       </section>
 
+      <section id="faq" className="faq section-shell">
+        <div className="section-heading">
+          <p className="section-kicker">FAQ</p>
+          <h2>Questions before launch.</h2>
+        </div>
+        <div className="faq-grid">
+          {faqs.map(([q, a]) => (
+            <div className="faq-item" key={q}>
+              <h3>{q}</h3>
+              <p>{a}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <footer className="footer">
-        <div className="section-shell footer-inner">
-          <span>AI voice keyboard for Android</span>
-          <span>Built with OpenRouter cleanup and cloud sync.</span>
+        <div className="section-shell footer-grid">
+          <div>
+            <Image src="/logo.png" alt="" width={44} height={44} />
+            <p>HyperVoice turns spoken thoughts into ready-to-send text across Android.</p>
+          </div>
+          <div>
+            <a href="#anywhere">Use Anywhere</a>
+            <a href="#languages">Languages</a>
+            <a href="#pricing">Pricing</a>
+            <a href={APK_DOWNLOAD_URL}>Download APK</a>
+          </div>
         </div>
         <strong>HYPERVOICE</strong>
       </footer>
@@ -233,29 +336,63 @@ export default function LandingPage() {
   );
 }
 
-function PhoneMock() {
+function LogoMarquee({ direction }: { direction: "left" | "right" }) {
+  const list = direction === "left" ? appLogos : [...appLogos].reverse();
   return (
-    <div className="phone-mock glass" aria-label="HyperVoice keyboard preview">
-      <div className="phone-status"><span>9:41</span><span>5G 100%</span></div>
-      <div className="chat-area">
-        <div className="chat-title">HyperVoice</div>
-        <div className="message sent">Can you format this as a client update?</div>
-        <div className="message received">Absolutely. Tap mic and speak naturally.</div>
-        <div className="voice-chip">
-          <VoiceGlyph />
-          <span>Listening...</span>
+    <div className="logo-marquee" aria-label="Popular apps">
+      <div className={`logo-track ${direction}`}>
+        {[...list, ...list].map(([name, src], index) => (
+          <span key={`${name}-${index}`}>
+            <img src={src} alt="" />
+            {name}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function HeroPhone() {
+  return (
+    <div className="hero-phone-wrap">
+      <div className="phone-mock glass">
+        <div className="phone-status"><span>9:41</span><span>5G 100%</span></div>
+        <div className="chat-area">
+          <div className="chat-title">Project chat</div>
+          <div className="message sent">Please make this update sound confident.</div>
+          <div className="message received">Sure. Speak naturally and I will clean it.</div>
+          <div className="voice-chip"><VoiceGlyph /><span>Listening...</span></div>
+        </div>
+        <div className="keyboard-ui">
+          <div className="keyboard-top"><strong>HyperVoice</strong><span><VoiceGlyph /> EN</span></div>
+          <div className="keyboard-keys">
+            {"QWERTYUIOPASDFGHJKLZXCVBNM".split("").map((key) => <i key={key}>{key}</i>)}
+            <button>123</button><button>EN</button><button>Enter</button>
+          </div>
         </div>
       </div>
-      <div className="keyboard-ui">
-        <div className="keyboard-top">
-          <strong>HyperVoice</strong>
-          <span><VoiceGlyph /> EN</span>
-        </div>
-        <div className="keyboard-keys">
-          {"QWERTYUIOPASDFGHJKLZXCVBNM".split("").map((key) => <i key={key}>{key}</i>)}
-          <button>123</button><button>EN</button><button>Enter</button>
-        </div>
-      </div>
+    </div>
+  );
+}
+
+function WorkflowCard({ title, body, sample }: { title: string; body: string; sample: string }) {
+  return (
+    <div className="workflow-card glass">
+      <h2>{title}</h2>
+      <p>{body}</p>
+      <div className="workflow-sample"><VoiceGlyph /><span>{sample}</span></div>
+    </div>
+  );
+}
+
+function PriceCard({ name, price, body, items, featured }: { name: string; price: string; body: string; items: string[]; featured?: boolean }) {
+  return (
+    <div className={`price-card ${featured ? "featured" : ""}`}>
+      <span>{name}</span>
+      <h3>{price}</h3>
+      <p>{body}</p>
+      <ul>{items.map((item) => <li key={item}>{item}</li>)}</ul>
+      <a href={APK_DOWNLOAD_URL} className="btn btn-light">{featured ? "Choose Pro" : "Get started"}</a>
     </div>
   );
 }
