@@ -191,6 +191,36 @@ export default function LandingPage() {
         </div>
       </section>
 
+      <section className="analytics-section section-shell">
+        <div className="section-heading">
+          <p className="section-kicker">Analytics</p>
+          <h2>Know how much faster your voice is getting.</h2>
+          <p>HyperVoice turns saved dictation history into simple momentum metrics for speed, volume, consistency, and time saved.</p>
+        </div>
+        <div className="analytics-bento">
+          <div className="analytics-card primary">
+            <span>Average speed</span>
+            <strong>184 WPM</strong>
+            <p>Voice sessions trend faster than normal mobile typing.</p>
+          </div>
+          <div className="analytics-card">
+            <span>Words captured</span>
+            <strong>12.8k</strong>
+          </div>
+          <div className="analytics-card">
+            <span>Characters typed</span>
+            <strong>64k</strong>
+          </div>
+          <div className="analytics-card">
+            <span>Current streak</span>
+            <strong>9 days</strong>
+          </div>
+          <div className="analytics-wave" aria-hidden>
+            {Array.from({ length: 58 }).map((_, index) => <i key={index} />)}
+          </div>
+        </div>
+      </section>
+
       <section id="features" className="feature-list">
         <div className="section-heading section-shell">
           <p className="section-kicker">AI cleanup</p>
@@ -264,7 +294,11 @@ export default function LandingPage() {
       <section className="iphone-3d section-shell">
         <div className="iphone-scene">
           <div className="iphone-device">
-          <div className="iphone-screen">
+            <span className="side-button side-button-one" />
+            <span className="side-button side-button-two" />
+            <span className="camera-button" />
+            <div className="iphone-screen">
+              <div className="dynamic-island" />
               <div className="screen-title">Type 4x faster</div>
               <p className="type-line">Type 4x faster in any tools...</p>
               <div className="screen-wave">{Array.from({ length: 28 }).map((_, index) => <i key={index} />)}</div>
@@ -299,7 +333,7 @@ export default function LandingPage() {
           <p className="section-kicker">Use cases</p>
           <h2>Useful wherever words are work.</h2>
         </div>
-        <div className="use-grid">
+        <div className="use-grid use-bento">
           {useCases.map(([title, body]) => (
             <div className="use-card" key={title}>
               <h3>{title}</h3>
@@ -324,13 +358,15 @@ export default function LandingPage() {
 
       <section id="download" className="download section-shell">
         <div className="download-panel glass">
-          <Image src="/logo.png" alt="" width={68} height={68} />
-          <div>
+          <div className="download-icon-wrap">
+            <Image src="/logo.png" alt="" width={82} height={82} />
+          </div>
+          <div className="download-copy">
             <p className="section-kicker">Install without the Play Store</p>
             <h2>Share the APK from this page.</h2>
             <p>Users install HyperVoice, enable the Android keyboard, sign in, and start writing with your live Vercel backend.</p>
           </div>
-          <a href={APK_DOWNLOAD_URL} className="btn btn-dark">Download APK</a>
+          <a href={APK_DOWNLOAD_URL} className="btn btn-dark download-big">Download APK</a>
         </div>
       </section>
 
