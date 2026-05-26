@@ -45,11 +45,13 @@ export default function HomeScreen() {
 
   const stats = useMemo(() => {
     let totalWords = 0;
+    let totalCharacters = 0;
     let totalDurationSec = 0;
 
     items.forEach((item) => {
       const itemWords = item.finalText.trim().split(/\s+/).filter(Boolean).length;
       totalWords += itemWords;
+      totalCharacters += item.finalText.replace(/\s/g, "").length;
       if (item.durationSec && item.durationSec > 0) {
         totalDurationSec += item.durationSec;
       } else {
@@ -67,8 +69,10 @@ export default function HomeScreen() {
     return {
       minutes: totalMinutes.toFixed(1),
       words: totalWords,
+      characters: totalCharacters,
       saved: minutesSaved,
-      wpm
+      wpm,
+      entries: items.length
     };
   }, [items]);
 
@@ -111,6 +115,8 @@ export default function HomeScreen() {
       <View style={styles.statsCard}>
         <Stat icon="time-outline" value={`${stats.minutes}`} unit="min" label="Total dictation time" />
         <Stat icon="mic-outline" value={`${stats.words}`} unit="words" label="Words detected" />
+        <Stat icon="text-outline" value={`${stats.characters}`} unit="chars" label="Characters typed" />
+        <Stat icon="analytics-outline" value={`${stats.entries}`} unit="entries" label="History entries" />
         <Stat icon="hourglass-outline" value={`${stats.saved}`} unit="min" label="Time saved" />
         <Stat icon="flash-outline" value={`${stats.wpm}`} unit="WPM" label="Average dictation speed" />
       </View>

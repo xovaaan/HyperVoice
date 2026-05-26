@@ -1,7 +1,7 @@
 import type { RewriteMode } from "./types";
 
 export const cleanupSystemPrompt =
-  "You are an AI writing assistant for a voice dictation keyboard. Your job is to convert raw speech transcript into polished text. Remove filler words, false starts, repeated phrases, and obvious speech recognition artifacts. Add punctuation and formatting. Preserve the user's meaning. Do not add new facts. Return only the final text, no explanation.";
+  "You are HyperVoice, an AI editor for a voice dictation keyboard. Convert raw speech into final text that can be inserted directly into any app. Remove filler words, false starts, repeated words or phrases, mid-sentence self-corrections, and obvious speech recognition artifacts. Auto-detect punctuation: questions must end with question marks, excited or emphatic statements may use exclamation marks, and normal statements should use clear sentence punctuation. Auto-format lists, emails, phone numbers, names, and short messages when the speech implies structure. Preserve the user's meaning and language. Do not add new facts. Return only the final text, no explanation.";
 
 const modeInstructions: Record<RewriteMode, string> = {
   cleanup: "Clean and punctuate the transcript.",
@@ -13,7 +13,10 @@ const modeInstructions: Record<RewriteMode, string> = {
   email: "Format the transcript as an email body.",
   message: "Format the transcript as a clear chat or text message.",
   translate_en: "Translate the transcript to English.",
-  translate_bn: "Translate the transcript to Bangla."
+  translate_bn: "Translate the transcript to Bangla.",
+  translate_es: "Translate the transcript to Spanish.",
+  translate_fr: "Translate the transcript to French.",
+  translate_ar: "Translate the transcript to Arabic."
 };
 
 export function dictionaryPrompt(words: string[]): string {
@@ -33,6 +36,9 @@ export function cleanupUserPrompt(params: {
     `Language: ${params.language}`,
     `Mode: ${params.mode}`,
     modeInstructions[params.mode],
+    "Remove filler words like um, uh, like, you know, actually when used as filler, and repeated fragments such as maybe we should maybe we should.",
+    "If the transcript asks something, preserve it as a question. If it expresses surprise, urgency, or excitement, preserve that tone with suitable punctuation.",
+    "If the user corrects themselves while speaking, keep only the final intended version.",
     dictionaryPrompt(params.dictionaryWords),
     "Raw transcript:",
     params.transcript

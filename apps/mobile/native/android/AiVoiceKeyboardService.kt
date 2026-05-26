@@ -50,8 +50,15 @@ class AiVoiceKeyboardService : InputMethodService() {
     private var isListening = false
     private var lastRmsLevel = 0f
 
-    private val languageValues = listOf("en-US", "bn-BD", "hi-IN")
-    private val languageLabels = listOf("EN", "BN", "HI")
+    private val languageValues = listOf(
+        "en-US", "bn-BD", "hi-IN", "es-ES", "fr-FR", "de-DE", "it-IT", "pt-BR",
+        "ar-SA", "zh-CN", "ja-JP", "ko-KR", "ru-RU", "tr-TR", "id-ID", "ms-MY",
+        "th-TH", "vi-VN", "ur-PK", "ta-IN", "te-IN", "mr-IN", "nl-NL"
+    )
+    private val languageLabels = listOf(
+        "EN", "BN", "HI", "ES", "FR", "DE", "IT", "PT", "AR", "ZH", "JA", "KO",
+        "RU", "TR", "ID", "MS", "TH", "VI", "UR", "TA", "TE", "MR", "NL"
+    )
     private val letterRows = listOf(
         listOf("Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"),
         listOf("A", "S", "D", "F", "G", "H", "J", "K", "L"),
@@ -131,7 +138,7 @@ class AiVoiceKeyboardService : InputMethodService() {
             val rowView = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER
-                setPadding(if (rowIndex == 1 && !isEmoji) dp(18) else 0, dp(5), if (rowIndex == 1 && !isEmoji) dp(18) else 0, dp(5))
+                setPadding(if (rowIndex == 1 && !isEmoji) dp(18) else 0, dp(3), if (rowIndex == 1 && !isEmoji) dp(18) else 0, dp(3))
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
@@ -171,10 +178,10 @@ class AiVoiceKeyboardService : InputMethodService() {
         return Button(this).apply {
             text = displayLabel
             textSize = when {
-                isReturn -> 28f
-                isSpace -> 28f
-                isSpecial -> 24f
-                else -> 32f
+                isReturn -> 23f
+                isSpace -> 22f
+                isSpecial -> 19f
+                else -> 25f
             }
             typeface = Typeface.DEFAULT
             isAllCaps = false
@@ -189,7 +196,7 @@ class AiVoiceKeyboardService : InputMethodService() {
             })
             layoutParams = LinearLayout.LayoutParams(
                 0,
-                if (isSpace || isReturn) dp(66) else dp(68),
+                if (isSpace || isReturn) dp(50) else dp(52),
                 when {
                     isSpace -> 4.8f
                     key == "123" -> 2.4f
@@ -202,6 +209,12 @@ class AiVoiceKeyboardService : InputMethodService() {
                 setMargins(dp(3), 0, dp(3), 0)
             }
             setOnClickListener { handleKey(key) }
+            if (key == "backspace") {
+                setOnLongClickListener {
+                    deleteAllTextAroundCursor()
+                    true
+                }
+            }
         }
     }
 
@@ -360,6 +373,9 @@ class AiVoiceKeyboardService : InputMethodService() {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, selectedLanguage())
             putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
             putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 650)
+            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 450)
+            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 250)
         }
         speechRecognizer?.startListening(intent)
     }
@@ -444,6 +460,17 @@ class AiVoiceKeyboardService : InputMethodService() {
     private fun backspace() {
         val ic = currentInputConnection ?: cachedInputConnection ?: return
         ic.deleteSurroundingText(1, 0)
+    }
+
+    private fun deleteAllTextAroundCursor() {
+        val ic = currentInputConnection ?: cachedInputConnection ?: return
+        ic.beginBatchEdit()
+        try {
+            ic.deleteSurroundingText(10000, 10000)
+            ic.commitText("", 1)
+        } finally {
+            ic.endBatchEdit()
+        }
     }
 
     private fun commitReturn() {

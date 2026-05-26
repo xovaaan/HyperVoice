@@ -11,7 +11,6 @@ import {
   TouchableOpacity,
   View,
   Animated,
-  Dimensions,
 } from "react-native";
 import { useSignIn, useSignUp, useOAuth } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
@@ -20,8 +19,6 @@ import * as AuthSession from "expo-auth-session";
 import { LinearGradient } from "expo-linear-gradient";
 
 WebBrowser.maybeCompleteAuthSession();
-
-const { width, height } = Dimensions.get("window");
 
 export default function AuthScreen({ onAuthSuccess }: { onAuthSuccess: () => void }) {
   const { isLoaded: isSignInLoaded, signIn, setActive: setSignInActive } = useSignIn();
@@ -51,8 +48,8 @@ export default function AuthScreen({ onAuthSuccess }: { onAuthSuccess: () => voi
   useEffect(() => {
     const pulse = Animated.loop(
       Animated.sequence([
-        Animated.timing(pulseAnim, { toValue: 1.08, duration: 1200, useNativeDriver: true }),
-        Animated.timing(pulseAnim, { toValue: 1, duration: 1200, useNativeDriver: true })
+        Animated.timing(pulseAnim, { toValue: 1.04, duration: 850, useNativeDriver: true }),
+        Animated.timing(pulseAnim, { toValue: 1, duration: 850, useNativeDriver: true })
       ])
     );
     pulse.start();
@@ -63,12 +60,12 @@ export default function AuthScreen({ onAuthSuccess }: { onAuthSuccess: () => voi
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 800,
+        duration: 260,
         useNativeDriver: true,
       }),
       Animated.timing(slideAnim, {
         toValue: 0,
-        duration: 800,
+        duration: 260,
         useNativeDriver: true,
       })
     ]).start();
@@ -191,7 +188,7 @@ export default function AuthScreen({ onAuthSuccess }: { onAuthSuccess: () => voi
 
   return (
     <LinearGradient
-      colors={["#E3F2FD", "#F3E5F5", "#FFFFFF"]}
+      colors={["#FFFFFF", "#F6F9FF", "#F8F2FF", "#FFFFFF"]}
       style={styles.container}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
@@ -203,7 +200,7 @@ export default function AuthScreen({ onAuthSuccess }: { onAuthSuccess: () => voi
         <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
           <Animated.View style={[styles.header, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
             <Animated.View style={[styles.iconCircle, { transform: [{ scale: pulseAnim }] }]}>
-              <Ionicons name="mic-outline" size={48} color="#6A1B9A" />
+              <Ionicons name="mic-outline" size={42} color="#5F16D9" />
             </Animated.View>
             <Text style={styles.title}>HyperVoice</Text>
             <Text style={styles.subtitle}>
@@ -211,7 +208,7 @@ export default function AuthScreen({ onAuthSuccess }: { onAuthSuccess: () => voi
                 ? "Verify your email address"
                 : isSignUpMode
                 ? "Create your premium account"
-                : "Sign in to dictate with AI powers"}
+                : "Sign in and start dictating faster"}
             </Text>
           </Animated.View>
 
@@ -219,7 +216,7 @@ export default function AuthScreen({ onAuthSuccess }: { onAuthSuccess: () => voi
             {pendingVerification ? (
               <>
                 <View style={styles.inputContainer}>
-                  <Ionicons name="key-outline" size={20} color="#6A1B9A" style={styles.inputIcon} />
+                  <Ionicons name="key-outline" size={20} color="#5F16D9" style={styles.inputIcon} />
                   <TextInput
                     autoCapitalize="none"
                     value={code}
@@ -240,7 +237,7 @@ export default function AuthScreen({ onAuthSuccess }: { onAuthSuccess: () => voi
             ) : (
               <>
                 <View style={styles.inputContainer}>
-                  <Ionicons name="mail-outline" size={20} color="#6A1B9A" style={styles.inputIcon} />
+                  <Ionicons name="mail-outline" size={20} color="#5F16D9" style={styles.inputIcon} />
                   <TextInput
                     autoCapitalize="none"
                     value={emailAddress}
@@ -253,7 +250,7 @@ export default function AuthScreen({ onAuthSuccess }: { onAuthSuccess: () => voi
                 </View>
 
                 <View style={styles.inputContainer}>
-                  <Ionicons name="lock-closed-outline" size={20} color="#6A1B9A" style={styles.inputIcon} />
+                  <Ionicons name="lock-closed-outline" size={20} color="#5F16D9" style={styles.inputIcon} />
                   <TextInput
                     value={password}
                     placeholder="Password"
@@ -269,7 +266,7 @@ export default function AuthScreen({ onAuthSuccess }: { onAuthSuccess: () => voi
 
                 <TouchableOpacity style={styles.button} onPress={isSignUpMode ? onSignUpPress : onSignInPress} disabled={loading}>
                   <LinearGradient
-                    colors={["#6A1B9A", "#4A148C"]}
+                    colors={["#5F16D9", "#0866FF", "#00A6B7"]}
                     style={styles.buttonGradient}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
@@ -320,61 +317,65 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: "center",
-    marginBottom: 40,
+    marginBottom: 28,
   },
   iconCircle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    backgroundColor: "rgba(255, 255, 255, 0.92)",
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 16,
-    shadowColor: "#6A1B9A",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.15,
-    shadowRadius: 16,
-    elevation: 4,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.96)",
+    shadowColor: "#5F16D9",
+    shadowOffset: { width: 0, height: 14 },
+    shadowOpacity: 0.14,
+    shadowRadius: 24,
+    elevation: 6,
   },
   title: {
-    fontSize: 36,
+    fontSize: 44,
     fontWeight: "900",
-    color: "#4A148C",
-    letterSpacing: -0.5,
+    color: "#4B0FB0",
+    letterSpacing: 0,
   },
   subtitle: {
     fontSize: 16,
-    color: "#666666",
+    color: "#667085",
     textAlign: "center",
     marginTop: 8,
     lineHeight: 22,
     paddingHorizontal: 20,
   },
   form: {
-    backgroundColor: "rgba(255, 255, 255, 0.9)",
-    borderRadius: 24,
-    padding: 24,
+    backgroundColor: "rgba(255, 255, 255, 0.82)",
+    borderRadius: 30,
+    padding: 22,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.05,
-    shadowRadius: 20,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 18 },
+    shadowOpacity: 0.08,
+    shadowRadius: 28,
+    elevation: 5,
     gap: 16,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.5)",
+    borderColor: "rgba(255,255,255,0.95)",
   },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#FFFFFF",
-    borderRadius: 16,
+    borderRadius: 18,
     paddingHorizontal: 16,
-    height: 60,
+    height: 62,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.03,
-    shadowRadius: 6,
+    shadowOpacity: 0.04,
+    shadowRadius: 10,
     elevation: 1,
+    borderWidth: 1,
+    borderColor: "#EEF1F6",
   },
   inputIcon: {
     marginRight: 12,
@@ -390,10 +391,10 @@ const styles = StyleSheet.create({
   },
   button: {
     height: 60,
-    borderRadius: 16,
+    borderRadius: 18,
     marginTop: 8,
     overflow: "hidden",
-    shadowColor: "#6A1B9A",
+    shadowColor: "#5F16D9",
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.3,
     shadowRadius: 16,
@@ -451,7 +452,7 @@ const styles = StyleSheet.create({
   },
   secondaryButton: {
     height: 60,
-    borderRadius: 16,
+    borderRadius: 18,
     backgroundColor: "#FAFAFA",
     borderWidth: 1,
     borderColor: "#EFEFEF",
@@ -473,7 +474,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   link: {
-    color: "#6A1B9A",
+    color: "#5F16D9",
     fontWeight: "800",
     fontSize: 15,
   },
