@@ -450,12 +450,15 @@ function LogoMarquee({ direction }: { direction: "left" | "right" }) {
 function HeroPhone() {
   return (
     <div className="hero-phone-wrap">
-      <div className="iphone-device hero-iphone-device">
+      <div className="hero-phone-image" aria-label="HyperVoice iPhone preview">
         <span className="side-button side-button-one" />
         <span className="side-button side-button-two" />
+        <span className="side-button side-button-three" />
         <span className="camera-button" />
-        <div className="iphone-screen hero-iphone-screen">
-          <div className="dynamic-island" />
+        <div className="hero-phone-screen">
+          <div className="hero-notch">
+            <i />
+          </div>
           <div className="phone-status"><span>9:41</span><span>5G 100%</span></div>
           <div className="chat-area">
             <div className="chat-title">Project chat</div>
