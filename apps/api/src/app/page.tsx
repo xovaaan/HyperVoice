@@ -275,17 +275,22 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="workflow-grid section-shell">
-        <WorkflowCard
-          title="Faster work with AI Apps"
-          body="Dictate longer prompts for ChatGPT, Claude, Gemini, Cursor, Windsurf, Codex, DeepSeek, Manus, and Perplexity, then let HyperVoice clean the instruction before sending."
-          sample="Create a release checklist with QA, rollback notes, user announcement, and deployment risks."
-        />
-        <WorkflowCard
-          title="Faster work with Email"
-          body="Talk through a reply, and HyperVoice turns it into a clear note with greeting, context, next steps, and sign-off."
-          sample="Hi team, quick update: Android build passed, release asset is ready, and Vercel is live."
-        />
+      <section className="workflow-showcase ai-workflow section-shell">
+        <div className="workflow-copy">
+          <p className="section-kicker">Faster work with AI Apps</p>
+          <h2>Speak better prompts into ChatGPT, Claude, Gemini, and more.</h2>
+          <p>HyperVoice sits inside the keyboard, so long prompts become clean instructions before they reach your AI tools.</p>
+        </div>
+        <StraightPhone variant="ai" />
+      </section>
+
+      <section className="workflow-showcase email-workflow section-shell">
+        <StraightPhone variant="email" />
+        <div className="workflow-copy">
+          <p className="section-kicker">Faster work with Email</p>
+          <h2>Talk through an email and watch it format itself.</h2>
+          <p>Speak a rough reply, and HyperVoice shapes it into a Gmail-ready message with structure, tone, and next steps.</p>
+        </div>
       </section>
 
       <section className="speak-wave section-shell">
@@ -479,12 +484,52 @@ function HeroPhone() {
   );
 }
 
-function WorkflowCard({ title, body, sample }: { title: string; body: string; sample: string }) {
+function StraightPhone({ variant }: { variant: "ai" | "email" }) {
+  const isEmail = variant === "email";
   return (
-    <div className="workflow-card glass">
-      <h2>{title}</h2>
-      <p>{body}</p>
-      <div className="workflow-sample"><VoiceGlyph /><span>{sample}</span></div>
+    <div className="straight-phone" aria-label={isEmail ? "Gmail typing preview" : "AI prompt typing preview"}>
+      <div className="straight-phone-screen">
+        <div className="straight-island" />
+        <div className="app-topbar">
+          {isEmail ? (
+            <>
+              <img src="https://cdn.simpleicons.org/gmail/EA4335" alt="" />
+              <span>Gmail</span>
+            </>
+          ) : (
+            <>
+              <img src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/openai.svg" alt="" />
+              <span>AI workspace</span>
+            </>
+          )}
+        </div>
+        <div className={isEmail ? "gmail-card" : "ai-card"}>
+          {isEmail ? (
+            <>
+              <span>To: client@example.com</span>
+              <strong>Subject: Quick update on the launch</strong>
+              <p>Hi team,</p>
+              <p>The APK is ready, the landing page is live, and I will share the release link today.</p>
+              <p>Thanks,<br />HyperVoice</p>
+            </>
+          ) : (
+            <>
+              <span>Prompt</span>
+              <strong>Create a dashboard for my shop</strong>
+              <p>Include revenue, orders, product alerts, customer messages, and weekly growth cards.</p>
+            </>
+          )}
+        </div>
+        <div className="phone-keyboard">
+          <div className="phone-keyboard-top">
+            <strong>HyperVoice</strong>
+            <span><VoiceGlyph /> EN</span>
+          </div>
+          <div className="keyboard-wave">
+            {Array.from({ length: 20 }).map((_, index) => <i key={index} />)}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
