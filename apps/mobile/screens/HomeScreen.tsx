@@ -47,11 +47,13 @@ export default function HomeScreen() {
     let totalWords = 0;
     let totalCharacters = 0;
     let totalDurationSec = 0;
+    const activeDates = new Set<string>();
 
     items.forEach((item) => {
       const itemWords = item.finalText.trim().split(/\s+/).filter(Boolean).length;
       totalWords += itemWords;
       totalCharacters += item.finalText.replace(/\s/g, "").length;
+      activeDates.add(new Date(item.createdAt).toDateString());
       if (item.durationSec && item.durationSec > 0) {
         totalDurationSec += item.durationSec;
       } else {
@@ -62,6 +64,12 @@ export default function HomeScreen() {
 
     const totalMinutes = totalDurationSec / 60;
     const wpm = totalMinutes > 0 ? Math.round(totalWords / totalMinutes) : 0;
+    let streak = 0;
+    const cursor = new Date();
+    while (activeDates.has(cursor.toDateString())) {
+      streak += 1;
+      cursor.setDate(cursor.getDate() - 1);
+    }
     // Mobile typing average speed is ~35 WPM. HyperVoice dictation + AI is much faster.
     // Time saved = (Manual typing time at 35 WPM) - (Voice speech time)
     const minutesSaved = Math.max(0, Math.round((totalWords / 35) - totalMinutes));
@@ -72,7 +80,8 @@ export default function HomeScreen() {
       characters: totalCharacters,
       saved: minutesSaved,
       wpm,
-      entries: items.length
+      entries: items.length,
+      streak
     };
   }, [items]);
 
@@ -117,6 +126,7 @@ export default function HomeScreen() {
         <Stat icon="mic-outline" value={`${stats.words}`} unit="words" label="Words detected" />
         <Stat icon="text-outline" value={`${stats.characters}`} unit="chars" label="Characters typed" />
         <Stat icon="analytics-outline" value={`${stats.entries}`} unit="entries" label="History entries" />
+        <Stat icon="flame-outline" value={`${stats.streak}`} unit="days" label="Current streak" />
         <Stat icon="hourglass-outline" value={`${stats.saved}`} unit="min" label="Time saved" />
         <Stat icon="flash-outline" value={`${stats.wpm}`} unit="WPM" label="Average dictation speed" />
       </View>

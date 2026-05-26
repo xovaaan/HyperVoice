@@ -10,7 +10,7 @@ import { ClerkProvider, useUser, useAuth } from "@clerk/clerk-expo";
 
 import { api, type User } from "./lib/api";
 import { AppContext } from "./lib/appContext";
-import { saveUserId, syncNativeKeyboardSettings } from "./lib/storage";
+import { getCachedUser, saveCachedUser, saveUserId, syncNativeKeyboardSettings } from "./lib/storage";
 import { tokenCache } from "./lib/tokenCache";
 import { API_BASE_URL, CLERK_PUBLISHABLE_KEY, assertProductionConfig } from "./lib/config";
 
@@ -61,6 +61,10 @@ function MainAppContent() {
   useEffect(() => {
     async function check() {
       const val = await AsyncStorage.getItem("hypervoice.onboardingCompleted");
+      const cachedUser = await getCachedUser();
+      if (cachedUser) {
+        setAppUser(cachedUser);
+      }
       if (val === "true") {
         setOnboardingCompleted(true);
       }
@@ -89,6 +93,7 @@ function MainAppContent() {
         });
         if (!mounted) return;
         await saveUserId(result.user.id);
+        await saveCachedUser(result.user);
         setAppUser(result.user);
         setSyncError(null);
         syncNativeKeyboardSettings({
@@ -122,6 +127,7 @@ function MainAppContent() {
     refreshUser: async (nextUser: User) => {
       setAppUser(nextUser);
       await saveUserId(nextUser.id);
+      await saveCachedUser(nextUser);
       syncNativeKeyboardSettings({
         userId: nextUser.id,
         apiBaseUrl: API_BASE_URL,

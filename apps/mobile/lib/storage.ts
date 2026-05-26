@@ -2,9 +2,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Application from "expo-application";
 import { NativeModules, Platform } from "react-native";
 import type { Language, Mode } from "./constants";
+import type { User } from "./api";
 
 const USER_ID_KEY = "hypervoice.userId";
 const DEVICE_ID_KEY = "hypervoice.deviceId";
+const CACHED_USER_KEY = "hypervoice.cachedUser";
 
 type NativeSettings = {
   saveSettings?: (settings: {
@@ -33,6 +35,20 @@ export async function getOrCreateDeviceId(): Promise<string> {
 
 export async function saveUserId(userId: string) {
   await AsyncStorage.setItem(USER_ID_KEY, userId);
+}
+
+export async function saveCachedUser(user: User) {
+  await AsyncStorage.setItem(CACHED_USER_KEY, JSON.stringify(user));
+}
+
+export async function getCachedUser() {
+  const raw = await AsyncStorage.getItem(CACHED_USER_KEY);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as User;
+  } catch {
+    return null;
+  }
 }
 
 export async function getUserId() {

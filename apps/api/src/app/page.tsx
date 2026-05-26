@@ -9,10 +9,10 @@ const appLogos = [
   ["WhatsApp", "https://cdn.simpleicons.org/whatsapp/25D366"],
   ["Telegram", "https://cdn.simpleicons.org/telegram/26A5E4"],
   ["Gmail", "https://cdn.simpleicons.org/gmail/EA4335"],
-  ["Outlook", "https://cdn.simpleicons.org/microsoftoutlook/0078D4"],
-  ["Slack", "https://cdn.simpleicons.org/slack/4A154B"],
-  ["Discord", "https://cdn.simpleicons.org/discord/5865F2"],
-  ["LinkedIn", "https://cdn.simpleicons.org/linkedin/0A66C2"],
+  ["Outlook", "https://www.google.com/s2/favicons?domain=outlook.live.com&sz=64"],
+  ["Slack", "https://www.google.com/s2/favicons?domain=slack.com&sz=64"],
+  ["Discord", "https://www.google.com/s2/favicons?domain=discord.com&sz=64"],
+  ["LinkedIn", "https://www.google.com/s2/favicons?domain=linkedin.com&sz=64"],
   ["X", "https://cdn.simpleicons.org/x/111111"],
   ["Reddit", "https://cdn.simpleicons.org/reddit/FF4500"],
   ["Notion", "https://cdn.simpleicons.org/notion/111111"],
@@ -28,13 +28,19 @@ const appLogos = [
   ["Gemini", "https://unpkg.com/@lobehub/icons-static-svg@latest/icons/gemini.svg"],
   ["Perplexity", "https://unpkg.com/@lobehub/icons-static-svg@latest/icons/perplexity.svg"],
   ["Google Chrome", "https://cdn.simpleicons.org/googlechrome/4285F4"],
-  ["Microsoft Edge", "https://cdn.simpleicons.org/microsoftedge/0078D7"],
+  ["Microsoft Edge", "https://www.google.com/s2/favicons?domain=microsoftedge.com&sz=64"],
   ["Shopify", "https://cdn.simpleicons.org/shopify/7AB55C"],
   ["WordPress", "https://cdn.simpleicons.org/wordpress/21759B"],
   ["YouTube", "https://cdn.simpleicons.org/youtube/FF0000"],
   ["TikTok", "https://cdn.simpleicons.org/tiktok/111111"],
   ["Snapchat", "https://cdn.simpleicons.org/snapchat/FFFC00"],
   ["GitHub", "https://cdn.simpleicons.org/github/181717"],
+  ["Lovable", "https://unpkg.com/@lobehub/icons-static-svg@latest/icons/lovable.svg"],
+  ["Cursor", "https://unpkg.com/@lobehub/icons-static-svg@latest/icons/cursor.svg"],
+  ["Windsurf", "https://unpkg.com/@lobehub/icons-static-svg@latest/icons/windsurf.svg"],
+  ["Codex", "https://unpkg.com/@lobehub/icons-static-svg@latest/icons/openai.svg"],
+  ["DeepSeek", "https://unpkg.com/@lobehub/icons-static-svg@latest/icons/deepseek.svg"],
+  ["Manus", "https://unpkg.com/@lobehub/icons-static-svg@latest/icons/manus.svg"],
   ["Vercel", "https://unpkg.com/@lobehub/icons-static-svg@latest/icons/vercel.svg"],
   ["Neon", "https://cdn.simpleicons.org/neon/00E599"],
   ["Android", "https://cdn.simpleicons.org/android/3DDC84"],
@@ -218,14 +224,25 @@ export default function LandingPage() {
       <section className="workflow-grid section-shell">
         <WorkflowCard
           title="Faster work with AI Apps"
-          body="Dictate longer prompts for ChatGPT, Claude, Gemini, and Perplexity, then let HyperVoice clean the instruction before sending."
-          sample="Create a launch checklist for the APK release, include risks, QA, and announcement copy."
+          body="Dictate longer prompts for ChatGPT, Claude, Gemini, Cursor, Windsurf, Codex, DeepSeek, Manus, and Perplexity, then let HyperVoice clean the instruction before sending."
+          sample="Create a release checklist with QA, rollback notes, user announcement, and deployment risks."
         />
         <WorkflowCard
           title="Faster work with Email"
           body="Talk through a reply, and HyperVoice turns it into a clear note with greeting, context, next steps, and sign-off."
           sample="Hi team, quick update: Android build passed, release asset is ready, and Vercel is live."
         />
+      </section>
+
+      <section className="speak-wave section-shell">
+        <div>
+          <p className="section-kicker">Ditch typing, Start speaking</p>
+          <h2>Let your voice carry the first draft.</h2>
+          <p>Tap the mic, talk naturally, and watch HyperVoice turn a rough thought into text that is ready for the app you are already using.</p>
+        </div>
+        <div className="gradient-wave" aria-hidden>
+          {Array.from({ length: 64 }).map((_, index) => <i key={index} />)}
+        </div>
       </section>
 
       <section className="model-section section-shell">
@@ -247,18 +264,33 @@ export default function LandingPage() {
       <section className="iphone-3d section-shell">
         <div className="iphone-scene">
           <div className="iphone-device">
-            <div className="iphone-screen">
-              <div className="screen-title">Field note</div>
-              <p className="type-line">Drafting a polished update for the team...</p>
+          <div className="iphone-screen">
+              <div className="screen-title">Type 4x faster</div>
+              <p className="type-line">Type 4x faster in any tools...</p>
               <div className="screen-wave">{Array.from({ length: 28 }).map((_, index) => <i key={index} />)}</div>
-              <div className="screen-output">The Android build is complete. I will upload the APK and share the release link today.</div>
+              <div className="screen-output">Use HyperVoice in AI apps, email, chat, docs, task tools, and anywhere Android lets you type.</div>
             </div>
           </div>
         </div>
         <div className="iphone-copy">
           <p className="section-kicker">Animated voice typing</p>
-          <h2>A 3D phone moment built for the landing page.</h2>
-          <p>Sound waves, a typewriting line, and a floating iPhone-style frame show exactly what the app does without copying another product page.</p>
+          <h2>Type 4x faster in any tools.</h2>
+          <p>A floating phone, live wave motion, and typewriting effect show how HyperVoice moves from speech to useful text inside everyday apps.</p>
+        </div>
+      </section>
+
+      <section className="streaks section-shell">
+        <div className="streak-copy">
+          <p className="section-kicker">Streaks</p>
+          <h2>Build a daily speaking habit.</h2>
+          <p>HyperVoice tracks active writing days from saved entries so users can see consistency, momentum, and progress over time.</p>
+        </div>
+        <div className="streak-card">
+          <span>Current streak</span>
+          <strong>7 days</strong>
+          <div className="streak-days">
+            {["M", "T", "W", "T", "F", "S", "S"].map((day, index) => <i key={`${day}-${index}`}>{day}</i>)}
+          </div>
         </div>
       </section>
 
@@ -328,6 +360,9 @@ export default function LandingPage() {
             <a href="#languages">Languages</a>
             <a href="#pricing">Pricing</a>
             <a href={APK_DOWNLOAD_URL}>Download APK</a>
+            <a href="#terms">Terms and Conditions</a>
+            <a href="#privacy">Privacy Policy</a>
+            <a href="#contact">Contact</a>
           </div>
         </div>
         <strong>HYPERVOICE</strong>

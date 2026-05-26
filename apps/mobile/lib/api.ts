@@ -95,8 +95,8 @@ export const api = {
     return requestWithRetry<{ user: User }>("/api/users/init", {
       method: "POST",
       body: JSON.stringify(input),
-      timeoutMs: 45000
-    }, 2);
+      timeoutMs: 12000
+    }, 1);
   },
   cleanup(input: {
     userId: string;

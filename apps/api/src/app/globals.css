@@ -273,6 +273,54 @@ img { max-width: 100%; }
 .model-card h3 { margin-top: 28px; font-size: 23px; }
 .model-card p { margin-top: 10px; color: var(--muted); line-height: 1.52; }
 
+.speak-wave {
+  display: grid;
+  grid-template-columns: 0.72fr 1fr;
+  align-items: center;
+  gap: 44px;
+  margin-top: 42px;
+  margin-bottom: 42px;
+  border-radius: 34px;
+  padding: 44px;
+  background:
+    linear-gradient(120deg, rgba(95, 22, 217, 0.16), rgba(8, 102, 255, 0.12), rgba(0, 166, 183, 0.16)),
+    rgba(255, 255, 255, 0.76);
+  box-shadow: var(--shadow);
+}
+.speak-wave h2 {
+  margin-top: 16px;
+  font-size: 54px;
+  line-height: 1;
+  letter-spacing: 0;
+  font-weight: 930;
+}
+.speak-wave p:not(.section-kicker) {
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.58;
+}
+.gradient-wave {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 280px;
+  border-radius: 30px;
+  background: #08090d;
+  overflow: hidden;
+}
+.gradient-wave i {
+  width: 7px;
+  height: 70px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f0abfc, #60a5fa, #67e8f9);
+  animation: wave 1.2s ease-in-out infinite;
+}
+.gradient-wave i:nth-child(2n) { animation-delay: 70ms; }
+.gradient-wave i:nth-child(3n) { animation-delay: 140ms; }
+.gradient-wave i:nth-child(5n) { animation-delay: 210ms; }
+
 .iphone-3d { display: grid; grid-template-columns: 0.9fr 0.8fr; align-items: center; gap: 70px; padding: 92px 0; }
 .iphone-scene { perspective: 1200px; display: grid; place-items: center; min-height: 560px; }
 .iphone-device {
@@ -307,6 +355,61 @@ img { max-width: 100%; }
 }
 .use-card h3, .faq-item h3 { font-size: 22px; }
 .use-card p, .faq-item p { margin-top: 10px; color: var(--muted); line-height: 1.55; }
+
+.streaks {
+  display: grid;
+  grid-template-columns: 1fr 0.62fr;
+  align-items: center;
+  gap: 30px;
+  padding: 82px 0;
+}
+.streak-copy h2 {
+  margin-top: 16px;
+  font-size: 56px;
+  line-height: 1;
+  letter-spacing: 0;
+  font-weight: 930;
+}
+.streak-copy p:not(.section-kicker) {
+  margin-top: 16px;
+  max-width: 620px;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.58;
+}
+.streak-card {
+  border: 1px solid var(--line);
+  border-radius: 32px;
+  background: linear-gradient(135deg, #fff, #eef6ff);
+  padding: 30px;
+  box-shadow: var(--shadow);
+}
+.streak-card span {
+  color: var(--muted);
+  font-weight: 830;
+}
+.streak-card strong {
+  display: block;
+  margin-top: 12px;
+  font-size: 58px;
+  letter-spacing: 0;
+}
+.streak-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-top: 26px;
+}
+.streak-days i {
+  display: grid;
+  place-items: center;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--violet), var(--blue), var(--cyan));
+  color: #fff;
+  font-style: normal;
+  font-weight: 900;
+}
 
 .pricing { padding: 82px 0; }
 .pricing-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
@@ -355,7 +458,7 @@ img { max-width: 100%; }
   .nav { grid-template-columns: auto auto; }
   .nav-links { display: none; }
   .hero h1 { font-size: 70px; }
-  .bento, .feature-row, .workflow-grid, .iphone-3d, .download-panel { grid-template-columns: 1fr; }
+  .bento, .feature-row, .workflow-grid, .speak-wave, .iphone-3d, .streaks, .download-panel { grid-template-columns: 1fr; }
   .model-grid, .pricing-grid { grid-template-columns: repeat(2, 1fr); }
   .use-grid { grid-template-columns: repeat(2, 1fr); }
   .download-panel { justify-items: center; text-align: center; }
@@ -374,7 +477,10 @@ img { max-width: 100%; }
   .hero-download { min-height: 58px; font-size: 17px; }
   .phone-mock { min-height: 620px; border-radius: 32px; transform: none; }
   .section-heading h2, .bento-large h2, .feature-copy h2, .workflow-card h2, .iphone-copy h2, .download-panel h2, .faq h2 { font-size: 38px; }
-  .marquee-section, .bento, .feature-list, .languages, .workflow-grid, .model-section, .iphone-3d, .use-cases, .pricing, .download, .faq { padding-block: 54px; }
+  .marquee-section, .bento, .feature-list, .languages, .workflow-grid, .model-section, .speak-wave, .iphone-3d, .streaks, .use-cases, .pricing, .download, .faq { padding-block: 54px; }
+  .speak-wave { padding-inline: 18px; }
+  .speak-wave h2, .streak-copy h2 { font-size: 38px; }
+  .gradient-wave { min-height: 210px; }
   .metric-row, .model-grid, .use-grid, .pricing-grid, .faq-grid, .footer-grid { grid-template-columns: 1fr; }
   .feature-demo { min-height: 280px; padding: 18px; }
   .bubble { font-size: 15px; padding: 16px; }
