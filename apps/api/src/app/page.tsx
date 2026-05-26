@@ -54,7 +54,7 @@ const modelLogos = [
   ["OpenRouter", "https://unpkg.com/@lobehub/icons-static-svg@latest/icons/openrouter.svg", "One API for model routing"]
 ];
 
-const languages = [
+const languageNames = [
   "English", "Bangla", "Hindi", "Spanish", "French", "German", "Italian", "Portuguese", "Arabic", "Chinese",
   "Japanese", "Korean", "Russian", "Turkish", "Indonesian", "Malay", "Thai", "Vietnamese", "Urdu", "Tamil",
   "Telugu", "Marathi", "Dutch", "Polish", "Ukrainian", "Greek", "Hebrew", "Persian", "Swedish", "Norwegian",
@@ -67,6 +67,25 @@ const languages = [
   "Samoan", "Scots Gaelic", "Sesotho", "Shona", "Sindhi", "Sinhala", "Somali", "Sundanese", "Tajik", "Uzbek",
   "Welsh", "Xhosa", "Yiddish", "Yoruba", "Zulu"
 ];
+
+const languageCountries = [
+  "US", "BD", "IN", "ES", "FR", "DE", "IT", "BR", "SA", "CN",
+  "JP", "KR", "RU", "TR", "ID", "MY", "TH", "VN", "PK", "IN",
+  "IN", "IN", "NL", "PL", "UA", "GR", "IL", "IR", "SE", "NO",
+  "DK", "FI", "CZ", "RO", "HU", "BG", "HR", "RS", "SK", "SI",
+  "LT", "LV", "EE", "PH", "TZ", "ZA", "AL", "ET", "AM", "AZ",
+  "ES", "BY", "BA", "MM", "ES", "PH", "MW", "FR", "001", "NL",
+  "ES", "GE", "IN", "HT", "NG", "US", "CN", "IS", "NG", "IE",
+  "ID", "IN", "KZ", "KH", "RW", "IQ", "KG", "LA", "VA", "LU",
+  "MK", "MG", "IN", "MT", "NZ", "MN", "NP", "IN", "AF", "IN",
+  "WS", "GB", "LS", "ZW", "PK", "LK", "SO", "ID", "TJ", "UZ",
+  "GB", "ZA", "IL", "NG", "ZA"
+];
+
+const languages = languageNames.map((name, index) => ({
+  name,
+  country: languageCountries[index] ?? "US"
+}));
 
 const cleanupFeatures = [
   {
@@ -247,7 +266,12 @@ export default function LandingPage() {
           <p>Designed as a multilingual keyboard experience for global teams, creators, students, and families.</p>
         </div>
         <div className="language-cloud">
-          {languages.map((language) => <span key={language}>{language}</span>)}
+          {languages.map((language) => (
+            <span key={language.name}>
+              <b>{flagFromCountry(language.country)}</b>
+              {language.name}
+            </span>
+          ))}
         </div>
       </section>
 
@@ -426,19 +450,25 @@ function LogoMarquee({ direction }: { direction: "left" | "right" }) {
 function HeroPhone() {
   return (
     <div className="hero-phone-wrap">
-      <div className="phone-mock glass">
-        <div className="phone-status"><span>9:41</span><span>5G 100%</span></div>
-        <div className="chat-area">
-          <div className="chat-title">Project chat</div>
-          <div className="message sent">Please make this update sound confident.</div>
-          <div className="message received">Sure. Speak naturally and I will clean it.</div>
-          <div className="voice-chip"><VoiceGlyph /><span>Listening...</span></div>
-        </div>
-        <div className="keyboard-ui">
-          <div className="keyboard-top"><strong>HyperVoice</strong><span><VoiceGlyph /> EN</span></div>
-          <div className="keyboard-keys">
-            {"QWERTYUIOPASDFGHJKLZXCVBNM".split("").map((key) => <i key={key}>{key}</i>)}
-            <button>123</button><button>EN</button><button>Enter</button>
+      <div className="iphone-device hero-iphone-device">
+        <span className="side-button side-button-one" />
+        <span className="side-button side-button-two" />
+        <span className="camera-button" />
+        <div className="iphone-screen hero-iphone-screen">
+          <div className="dynamic-island" />
+          <div className="phone-status"><span>9:41</span><span>5G 100%</span></div>
+          <div className="chat-area">
+            <div className="chat-title">Project chat</div>
+            <div className="message sent">Please make this update sound confident.</div>
+            <div className="message received">Sure. Speak naturally and I will clean it.</div>
+            <div className="voice-chip"><VoiceGlyph /><span>Listening...</span></div>
+          </div>
+          <div className="keyboard-ui">
+            <div className="keyboard-top"><strong>HyperVoice</strong><span><VoiceGlyph /> EN</span></div>
+            <div className="keyboard-keys">
+              {"QWERTYUIOPASDFGHJKLZXCVBNM".split("").map((key) => <i key={key}>{key}</i>)}
+              <button>123</button><button>EN</button><button>Enter</button>
+            </div>
           </div>
         </div>
       </div>
@@ -474,4 +504,11 @@ function VoiceGlyph() {
       <path d="M5 15v-4M9 18V8M13 21V5M17 18V8M21 15v-4" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
     </svg>
   );
+}
+
+function flagFromCountry(country: string) {
+  if (country === "001") return String.fromCodePoint(0x1F310);
+  return country
+    .toUpperCase()
+    .replace(/./g, (char) => String.fromCodePoint(127397 + char.charCodeAt(0)));
 }

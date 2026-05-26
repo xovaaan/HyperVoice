@@ -1,7 +1,10 @@
 package com.hypervoice.ime
 
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.GradientDrawable
 import android.inputmethodservice.InputMethodService
 import android.os.Bundle
 import android.os.Handler
@@ -16,6 +19,8 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.PopupWindow
+import android.widget.ScrollView
 import android.widget.TextView
 import com.hypervoice.R
 import com.hypervoice.BuildConfig
@@ -25,6 +30,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.Locale
 import kotlin.math.max
+import kotlin.math.min
 
 class AiVoiceKeyboardService : InputMethodService() {
     private var speechRecognizer: SpeechRecognizer? = null
@@ -59,6 +65,15 @@ class AiVoiceKeyboardService : InputMethodService() {
     private val languageLabels = listOf(
         "EN", "BN", "HI", "ES", "FR", "DE", "IT", "PT", "AR", "ZH", "JA", "KO",
         "RU", "TR", "ID", "MS", "TH", "VI", "UR", "TA", "TE", "MR", "NL"
+    )
+    private val languageNames = listOf(
+        "English", "Bangla", "Hindi", "Spanish", "French", "German", "Italian", "Portuguese",
+        "Arabic", "Chinese", "Japanese", "Korean", "Russian", "Turkish", "Indonesian", "Malay",
+        "Thai", "Vietnamese", "Urdu", "Tamil", "Telugu", "Marathi", "Dutch"
+    )
+    private val languageCountries = listOf(
+        "US", "BD", "IN", "ES", "FR", "DE", "IT", "BR", "SA", "CN", "JP", "KR",
+        "RU", "TR", "ID", "MY", "TH", "VN", "PK", "IN", "IN", "IN", "NL"
     )
     private val letterRows = listOf(
         listOf("Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"),
@@ -113,6 +128,7 @@ class AiVoiceKeyboardService : InputMethodService() {
 
         voiceToggleButton.setOnClickListener { toggleVoiceMode() }
         languageToggleButton.setOnClickListener { cycleLanguage() }
+        languageToggleButton.setOnLongClickListener { showLanguagePicker() }
         view.findViewById<View>(R.id.micButton).setOnClickListener { startListening(true) }
         view.findViewById<Button>(R.id.returnButton).setOnClickListener { commitReturn() }
         view.findViewById<Button>(R.id.voiceBackspaceButton).setOnClickListener { backspace() }
@@ -290,8 +306,117 @@ class AiVoiceKeyboardService : InputMethodService() {
 
     private fun cycleLanguage() {
         languageIndex = (languageIndex + 1) % languageValues.size
+        selectLanguage(languageIndex)
+    }
+
+    private fun selectLanguage(index: Int) {
+        languageIndex = index.coerceIn(0, languageValues.lastIndex)
         languageToggleButton.text = languageLabels[languageIndex]
+        getSharedPreferences("hypervoice_keyboard", MODE_PRIVATE)
+            .edit()
+            .putString("defaultLanguage", languageValues[languageIndex])
+            .apply()
         buildKeyboard()
+    }
+
+    private fun showLanguagePicker(): Boolean {
+        val popup = PopupWindow(this)
+        val container = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(12), dp(12), dp(12), dp(12))
+            background = roundedBg(Color.WHITE, dp(22), 0xFFE7EAF0.toInt())
+        }
+
+        container.addView(TextView(this).apply {
+            text = "Choose language"
+            textSize = 17f
+            typeface = Typeface.DEFAULT_BOLD
+            setTextColor(0xFF111111.toInt())
+            setPadding(dp(8), dp(4), dp(8), dp(12))
+        })
+
+        languageValues.forEachIndexed { index, _ ->
+            val selected = index == languageIndex
+            val row = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                setPadding(dp(12), dp(9), dp(12), dp(9))
+                background = roundedBg(
+                    if (selected) 0xFF111111.toInt() else 0xFFF6F7FA.toInt(),
+                    dp(16),
+                    if (selected) 0xFF111111.toInt() else 0xFFE9ECF2.toInt()
+                )
+                isClickable = true
+                setOnClickListener {
+                    selectLanguage(index)
+                    popup.dismiss()
+                }
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    setMargins(0, 0, 0, dp(8))
+                }
+            }
+
+            row.addView(TextView(this).apply {
+                text = flagEmoji(languageCountries[index])
+                textSize = 22f
+                gravity = Gravity.CENTER
+                layoutParams = LinearLayout.LayoutParams(dp(42), dp(42))
+            })
+
+            row.addView(TextView(this).apply {
+                text = "${languageNames[index]}\n${languageValues[index]}"
+                textSize = 15f
+                typeface = Typeface.DEFAULT_BOLD
+                setTextColor(if (selected) Color.WHITE else 0xFF111111.toInt())
+                layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+            })
+
+            row.addView(TextView(this).apply {
+                text = languageLabels[index]
+                textSize = 13f
+                typeface = Typeface.DEFAULT_BOLD
+                setTextColor(if (selected) Color.WHITE else 0xFF667085.toInt())
+            })
+
+            container.addView(row)
+        }
+
+        val scroll = ScrollView(this).apply {
+            addView(container)
+            isVerticalScrollBarEnabled = true
+            background = ColorDrawable(Color.TRANSPARENT)
+        }
+
+        popup.contentView = scroll
+        popup.width = min(resources.displayMetrics.widthPixels - dp(28), dp(430))
+        popup.height = min(resources.displayMetrics.heightPixels / 2, dp(390))
+        popup.isFocusable = true
+        popup.isOutsideTouchable = true
+        popup.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            popup.elevation = dp(14).toFloat()
+        }
+        popup.showAtLocation(languageToggleButton, Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL, 0, dp(10))
+        return true
+    }
+
+    private fun roundedBg(color: Int, radius: Int, strokeColor: Int): GradientDrawable {
+        return GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            cornerRadius = radius.toFloat()
+            setColor(color)
+            setStroke(dp(1), strokeColor)
+        }
+    }
+
+    private fun flagEmoji(countryCode: String): String {
+        val base = 0x1F1E6 - 'A'.code
+        return countryCode.uppercase(Locale.US).map { char ->
+            String(Character.toChars(base + char.code))
+        }.joinToString("")
     }
 
     private fun startListening(allowQuickRetry: Boolean = true) {
@@ -363,6 +488,7 @@ class AiVoiceKeyboardService : InputMethodService() {
                 }
                 previewText.visibility = View.VISIBLE
                 previewText.text = transcript
+                previewToHost(transcript)
                 statusText.text = "Cleaning with AI..."
                 sendTranscriptForCleanup(transcript, selectedMode, selectedLanguage(), durationSec)
             }
@@ -374,6 +500,7 @@ class AiVoiceKeyboardService : InputMethodService() {
                 if (!partial.isNullOrBlank()) {
                     previewText.visibility = View.VISIBLE
                     previewText.text = partial
+                    previewToHost(partial)
                 }
             }
 
@@ -458,15 +585,23 @@ class AiVoiceKeyboardService : InputMethodService() {
     private fun commitToHost(text: String): Boolean {
         if (text.isBlank()) return false
         val ic = currentInputConnection ?: cachedInputConnection ?: return false
-        ic.finishComposingText()
         ic.beginBatchEdit()
-        try {
+        val committed = try {
             ic.commitText(text, 1)
+            ic.finishComposingText()
         } finally {
             ic.endBatchEdit()
         }
         cachedInputConnection = ic
-        return true
+        return committed
+    }
+
+    private fun previewToHost(text: String): Boolean {
+        if (text.isBlank()) return false
+        val ic = currentInputConnection ?: cachedInputConnection ?: return false
+        val previewed = ic.setComposingText(text, 1)
+        cachedInputConnection = ic
+        return previewed
     }
 
     private fun backspace() {
@@ -521,7 +656,8 @@ class AiVoiceKeyboardService : InputMethodService() {
 
     private fun startPulseAnimation() {
         mainHandler.post {
-            stopPulseAnimation()
+            animatorSet?.cancel()
+            animatorSet = null
 
             val container = waveContainer ?: return@post
             val micButton = voicePanel.findViewById<View>(R.id.micButton)

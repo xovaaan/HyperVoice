@@ -127,6 +127,12 @@ img { max-width: 100%; }
 }
 
 .hero-phone-wrap { width: min(880px, 100%); margin-top: 54px; perspective: 1200px; }
+.hero-iphone-device {
+  margin: 0 auto;
+}
+.hero-iphone-screen {
+  padding-top: 62px;
+}
 .phone-mock {
   position: relative;
   width: min(410px, 100%);
@@ -327,6 +333,9 @@ img { max-width: 100%; }
 .languages { padding: 88px 0; }
 .language-cloud { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px; }
 .language-cloud span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   border: 1px solid var(--line);
   border-radius: 999px;
   background: rgba(255,255,255,0.76);
@@ -334,6 +343,10 @@ img { max-width: 100%; }
   color: rgba(7,8,12,0.7);
   font-size: 13px;
   font-weight: 780;
+}
+.language-cloud b {
+  font-size: 16px;
+  line-height: 1;
 }
 
 .workflow-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; padding: 72px 0; }
@@ -670,6 +683,7 @@ img { max-width: 100%; }
   .hero-text { font-size: 16px; }
   .hero-download { min-height: 58px; font-size: 17px; }
   .phone-mock { min-height: 620px; border-radius: 32px; transform: none; }
+  .hero-iphone-device { transform: none; }
   .section-heading h2, .bento-large h2, .feature-copy h2, .workflow-card h2, .iphone-copy h2, .download-panel h2, .faq h2 { font-size: 38px; }
   .marquee-section, .bento, .feature-list, .languages, .workflow-grid, .model-section, .analytics-section, .speak-wave, .iphone-3d, .streaks, .use-cases, .pricing, .download, .faq { padding-block: 54px; }
   .speak-wave { padding-inline: 18px; }
