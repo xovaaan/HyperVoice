@@ -1,4 +1,4 @@
-import { basicLocalCleanup } from "@/lib/fallbackCleanup";
+import { basicLocalCleanup, normalizeFinalPunctuation } from "@/lib/fallbackCleanup";
 import { callOpenRouterWithFallback } from "@/lib/openrouter";
 import { cleanupSystemPrompt, cleanupUserPrompt } from "@/lib/prompts";
 import { prisma } from "@/lib/prisma";
@@ -45,6 +45,7 @@ export async function POST(request: Request) {
   } catch {
     finalText = basicLocalCleanup(transcript);
   }
+  finalText = normalizeFinalPunctuation(finalText, transcript);
 
   if (saveHistory && user.saveHistory) {
     await prisma.textEntry.create({

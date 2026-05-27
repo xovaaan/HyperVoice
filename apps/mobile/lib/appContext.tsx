@@ -4,11 +4,13 @@ import type { User } from "./api";
 export type AppContextValue = {
   user: User | null;
   refreshUser: (user: User) => Promise<void>;
+  signOut: () => Promise<void>;
 };
 
 export const AppContext = createContext<AppContextValue>({
   user: null,
-  refreshUser: async () => undefined
+  refreshUser: async () => undefined,
+  signOut: async () => undefined
 });
 
 export function useHyperVoice() {

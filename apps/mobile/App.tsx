@@ -1,18 +1,25 @@
 import React, { Component, useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ClerkProvider, useUser, useAuth } from "@clerk/clerk-expo";
 
 import { api, type User } from "./lib/api";
 import { AppContext } from "./lib/appContext";
-import { getCachedUser, saveCachedUser, saveUserId, syncNativeKeyboardSettings } from "./lib/storage";
-import { tokenCache } from "./lib/tokenCache";
-import { API_BASE_URL, CLERK_PUBLISHABLE_KEY, assertProductionConfig } from "./lib/config";
+import {
+  clearAuthState,
+  getAuthProfile,
+  getCachedUser,
+  saveAuthProfile,
+  saveCachedUser,
+  saveUserId,
+  syncNativeKeyboardSettings,
+  type AuthProfile
+} from "./lib/storage";
+import { API_BASE_URL, assertProductionConfig } from "./lib/config";
 
 import HomeScreen from "./screens/HomeScreen";
 import HistoryScreen from "./screens/HistoryScreen";
@@ -48,10 +55,9 @@ class AppErrorBoundary extends Component<{ children: React.ReactNode }, { error:
 }
 
 function MainAppContent() {
-  const { isLoaded, isSignedIn, userId: clerkUserId } = useAuth();
-  const { user: clerkUser } = useUser();
   const [onboardingCompleted, setOnboardingCompleted] = useState(false);
   const [checkingOnboarding, setCheckingOnboarding] = useState(true);
+  const [authProfile, setAuthProfile] = useState<AuthProfile | null>(null);
   const [appUser, setAppUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
   const [syncError, setSyncError] = useState<string | null>(null);
@@ -65,6 +71,7 @@ function MainAppContent() {
       if (cachedUser) {
         setAppUser(cachedUser);
       }
+      setAuthProfile(await getAuthProfile());
       if (val === "true") {
         setOnboardingCompleted(true);
       }
@@ -73,23 +80,21 @@ function MainAppContent() {
     check();
   }, []);
 
-  // 2. Initialize HyperVoice backend user when Clerk user is available
   useEffect(() => {
-    if (!isSignedIn || !clerkUserId) {
+    if (!authProfile) {
       setAppUser(null);
       return;
     }
 
     let mounted = true;
     async function initBackendUser() {
-      setLoading(true);
+      setLoading(!appUser);
       setSyncError(null);
       try {
-        // Map the Clerk userId directly as the deviceId in our schema
         const result = await api.initUser({
-          deviceId: clerkUserId!,
-          email: clerkUser?.primaryEmailAddress?.emailAddress ?? null,
-          displayName: clerkUser?.fullName ?? clerkUser?.firstName ?? null
+          deviceId: `email:${authProfile!.email.toLowerCase()}`,
+          email: authProfile!.email,
+          displayName: authProfile!.displayName ?? null
         });
         if (!mounted) return;
         await saveUserId(result.user.id);
@@ -120,7 +125,7 @@ function MainAppContent() {
     return () => {
       mounted = false;
     };
-  }, [isSignedIn, clerkUserId, clerkUser?.primaryEmailAddress?.emailAddress, clerkUser?.fullName, clerkUser?.firstName, syncAttempt]);
+  }, [authProfile?.email, authProfile?.displayName, syncAttempt]);
 
   const contextValue = useMemo(() => ({
     user: appUser,
@@ -135,20 +140,32 @@ function MainAppContent() {
         defaultMode: nextUser.defaultMode,
         saveHistory: nextUser.saveHistory
       });
+    },
+    signOut: async () => {
+      await clearAuthState();
+      setAuthProfile(null);
+      setAppUser(null);
     }
   }), [appUser]);
 
-  if (checkingOnboarding || (isSignedIn && loading && !appUser)) {
+  if (checkingOnboarding || (authProfile && loading && !appUser)) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#080808" />
-        <Text style={styles.syncText}>Syncing HyperVoice secure vault...</Text>
+        <WaveLoader />
+        <Text style={styles.syncText}>Preparing HyperVoice...</Text>
       </View>
     );
   }
 
-  if (!isSignedIn) {
-    return <AuthScreen onAuthSuccess={() => {}} />;
+  if (!authProfile) {
+    return (
+      <AuthScreen
+        onAuthSuccess={async (profile) => {
+          await saveAuthProfile(profile);
+          setAuthProfile(profile);
+        }}
+      />
+    );
   }
 
   if (!appUser && syncError) {
@@ -183,7 +200,7 @@ function MainAppContent() {
         <StatusBar style="dark" />
         {loading ? (
           <View style={styles.syncBanner}>
-            <ActivityIndicator color="#111111" size="small" />
+            <WaveLoader small />
             <Text style={styles.syncText}>Syncing keyboard settings</Text>
           </View>
         ) : null}
@@ -253,32 +270,26 @@ function MainAppContent() {
   );
 }
 
-function ClerkGate() {
-  const { isLoaded } = useAuth();
-  useEffect(() => {
-    if (isLoaded) {
-      SplashScreen.hideAsync().catch(() => {});
-    }
-  }, [isLoaded]);
-
-  if (!isLoaded) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#6A1B9A" />
-        <Text style={styles.syncText}>Loading HyperVoice...</Text>
-      </View>
-    );
-  }
-  return <MainAppContent />;
-}
-
 export default function App() {
+  useEffect(() => {
+    SplashScreen.hideAsync().catch(() => {});
+  }, []);
+
   return (
     <AppErrorBoundary>
-      <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY} tokenCache={tokenCache}>
-        <ClerkGate />
-      </ClerkProvider>
+      <MainAppContent />
     </AppErrorBoundary>
+  );
+}
+
+function WaveLoader({ small = false }: { small?: boolean }) {
+  const bars = small ? [10, 16, 24, 16, 10] : [18, 30, 46, 30, 18];
+  return (
+    <View style={[styles.waveLoader, small && styles.waveLoaderSmall]}>
+      {bars.map((height, index) => (
+        <View key={index} style={[styles.waveBar, { height }, small && styles.waveBarSmall]} />
+      ))}
+    </View>
   );
 }
 
@@ -295,6 +306,24 @@ const styles = StyleSheet.create({
     color: "#666666",
     fontWeight: "700",
     fontSize: 14
+  },
+  waveLoader: {
+    minHeight: 58,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7
+  },
+  waveLoaderSmall: {
+    minHeight: 22,
+    gap: 4
+  },
+  waveBar: {
+    width: 8,
+    borderRadius: 999,
+    backgroundColor: "#111111"
+  },
+  waveBarSmall: {
+    width: 4
   },
   syncBanner: {
     position: "absolute",

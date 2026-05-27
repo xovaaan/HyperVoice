@@ -30,10 +30,6 @@ if ($env:EXPO_PUBLIC_API_BASE_URL -notmatch '^https://') {
   Write-Error "Production APK must use an HTTPS EXPO_PUBLIC_API_BASE_URL, for example https://your-app.vercel.app."
 }
 
-if ([string]::IsNullOrWhiteSpace($env:EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY)) {
-  Write-Error "Set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY before building the production APK."
-}
-
 Push-Location (Join-Path $mobileDir "android")
 try {
   .\gradlew.bat clean assembleRelease

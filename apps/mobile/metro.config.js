@@ -14,7 +14,6 @@ config.watchFolders = [workspaceRoot];
 config.resolver.nodeModulesPaths = [
   path.resolve(projectRoot, 'node_modules'),
   path.resolve(workspaceRoot, 'node_modules'),
-  path.resolve(workspaceRoot, 'node_modules/@clerk/clerk-expo/node_modules'),
 ];
 
 // 3. Resolve hoisted monorepo packages from the workspace root.

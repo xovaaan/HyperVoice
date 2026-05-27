@@ -11,8 +11,6 @@
     "ios": "expo run:ios"
   },
   "dependencies": {
-    "@clerk/clerk-expo": "^2.19.31",
-    "@clerk/clerk-react": "^5.61.6",
     "@expo/vector-icons": "^14.1.0",
     "@react-native-async-storage/async-storage": "^2.1.2",
     "@react-navigation/bottom-tabs": "^7.3.14",

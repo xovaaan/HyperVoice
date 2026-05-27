@@ -1,6 +1,5 @@
 import { Alert, Linking, PermissionsAndroid, Platform, Pressable, StyleSheet, Switch, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useAuth, useUser } from "@clerk/clerk-expo";
 import { Screen } from "../components/Screen";
 import { Button } from "../components/Button";
 import { api } from "../lib/api";
@@ -8,9 +7,7 @@ import { useHyperVoice } from "../lib/appContext";
 import { LANGUAGES, type Language } from "../lib/constants";
 
 export default function AccountScreen() {
-  const { user, refreshUser } = useHyperVoice();
-  const { signOut } = useAuth();
-  const { user: clerkUser } = useUser();
+  const { user, refreshUser, signOut } = useHyperVoice();
 
   async function patch(next: { saveHistory?: boolean; defaultLanguage?: Language }) {
     if (!user) return;
@@ -69,7 +66,7 @@ export default function AccountScreen() {
         <View style={{ flex: 1 }}>
           <Text style={styles.profileTitle}>Device user</Text>
           <Text style={styles.profileSub}>
-            {user?.email ?? clerkUser?.primaryEmailAddress?.emailAddress ?? user?.id.slice(0, 12) ?? "Not synced"}
+            {user?.email ?? user?.id.slice(0, 12) ?? "Not synced"}
           </Text>
         </View>
         <Ionicons name="chevron-forward" size={24} color="#333333" />

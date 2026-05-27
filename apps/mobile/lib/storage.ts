@@ -7,6 +7,12 @@ import type { User } from "./api";
 const USER_ID_KEY = "hypervoice.userId";
 const DEVICE_ID_KEY = "hypervoice.deviceId";
 const CACHED_USER_KEY = "hypervoice.cachedUser";
+const AUTH_PROFILE_KEY = "hypervoice.authProfile";
+
+export type AuthProfile = {
+  email: string;
+  displayName?: string | null;
+};
 
 type NativeSettings = {
   saveSettings?: (settings: {
@@ -39,6 +45,24 @@ export async function saveUserId(userId: string) {
 
 export async function saveCachedUser(user: User) {
   await AsyncStorage.setItem(CACHED_USER_KEY, JSON.stringify(user));
+}
+
+export async function saveAuthProfile(profile: AuthProfile) {
+  await AsyncStorage.setItem(AUTH_PROFILE_KEY, JSON.stringify(profile));
+}
+
+export async function getAuthProfile() {
+  const raw = await AsyncStorage.getItem(AUTH_PROFILE_KEY);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as AuthProfile;
+  } catch {
+    return null;
+  }
+}
+
+export async function clearAuthState() {
+  await AsyncStorage.multiRemove([AUTH_PROFILE_KEY, CACHED_USER_KEY, USER_ID_KEY]);
 }
 
 export async function getCachedUser() {

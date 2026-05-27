@@ -160,8 +160,8 @@ export default function LandingPage() {
         <div className="hero-inner section-shell">
           <p className="eyebrow">AI keyboard for people who think out loud</p>
           <h1>
-            Turn speech into polished text
-            <span>before your thumb catches up.</span>
+            Less Typing,
+            <span>More Speaking.</span>
           </h1>
           <p className="hero-text">
             HyperVoice is an Android voice keyboard that drafts, cleans, translates, formats, and
@@ -320,7 +320,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="iphone-3d section-shell">
+      <section className="iphone-3d iphone-static section-shell">
         <div className="iphone-scene">
           <div className="iphone-device">
             <span className="side-button side-button-one" />
@@ -328,17 +328,17 @@ export default function LandingPage() {
             <span className="camera-button" />
             <div className="iphone-screen">
               <div className="dynamic-island" />
-              <div className="screen-title">Type 4x faster</div>
-              <p className="type-line">Type 4x faster in any tools...</p>
-              <div className="screen-wave">{Array.from({ length: 28 }).map((_, index) => <i key={index} />)}</div>
-              <div className="screen-output">Use HyperVoice in AI apps, email, chat, docs, task tools, and anywhere Android lets you type.</div>
+              <div className="screen-title">HyperVoice keyboard</div>
+              <div className="screen-textarea">Ask the client if tomorrow afternoon still works, and make it sound polite.</div>
+              <div className="screen-voice-static">{Array.from({ length: 13 }).map((_, index) => <i key={index} />)}</div>
+              <div className="screen-output">Would tomorrow afternoon still work for you?</div>
             </div>
           </div>
         </div>
         <div className="iphone-copy">
           <p className="section-kicker">Animated voice typing</p>
-          <h2>Type 4x faster in any tools.</h2>
-          <p>A floating phone, live wave motion, and typewriting effect show how HyperVoice moves from speech to useful text inside everyday apps.</p>
+          <h2>Speak into the keyboard, not another app.</h2>
+          <p>HyperVoice keeps the writing surface simple: a voice panel, clean text preview, and output that is ready for chats, emails, notes, and AI prompts.</p>
         </div>
       </section>
 
@@ -348,11 +348,32 @@ export default function LandingPage() {
           <h2>Build a daily speaking habit.</h2>
           <p>HyperVoice tracks active writing days from saved entries so users can see consistency, momentum, and progress over time.</p>
         </div>
-        <div className="streak-card">
-          <span>Current streak</span>
-          <strong>7 days</strong>
-          <div className="streak-days">
-            {["M", "T", "W", "T", "F", "S", "S"].map((day, index) => <i key={`${day}-${index}`}>{day}</i>)}
+        <div className="streak-bento">
+          <div className="streak-tile streak-main">
+            <span>Current streak</span>
+            <strong>7 days</strong>
+            <div className="streak-days">
+              {["M", "T", "W", "T", "F", "S", "S"].map((day, index) => <i key={`${day}-${index}`}>{day}</i>)}
+            </div>
+          </div>
+          <div className="streak-tile">
+            <span>Words this week</span>
+            <strong>4.2k</strong>
+          </div>
+          <div className="streak-tile warm">
+            <span>Time saved</span>
+            <strong>3h</strong>
+          </div>
+          <div className="streak-phone">
+            <div className="streak-phone-screen">
+              <div className="straight-island" />
+              <strong>HyperVoice</strong>
+              <div className="phone-streak">7 day streak</div>
+              <div className="phone-keyboard compact">
+                <div className="phone-keyboard-top"><strong>HyperVoice</strong><span><VoiceGlyph /> EN</span></div>
+                <div className="keyboard-wave static-wave">{Array.from({ length: 16 }).map((_, index) => <i key={index} />)}</div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
