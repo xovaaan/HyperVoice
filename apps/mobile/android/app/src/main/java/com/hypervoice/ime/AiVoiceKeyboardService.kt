@@ -55,7 +55,7 @@ class AiVoiceKeyboardService : InputMethodService() {
     private var cachedInputConnection: InputConnection? = null
     private var isListening = false
     private var lastRmsLevel = 0f
-    private var quickRetryUsed = false
+    private var quickRetryCount = 0
 
     private val languageValues = listOf(
         "en-US",
@@ -869,14 +869,16 @@ class AiVoiceKeyboardService : InputMethodService() {
 
             override fun onError(error: Int) {
                 val elapsedMs = System.currentTimeMillis() - speechStartTime
-                if (allowQuickRetry && !quickRetryUsed && elapsedMs < 1800) {
-                    quickRetryUsed = true
-                    statusText.text = "Listening"
-                    mainHandler.postDelayed({ startListening(false) }, 250)
+                if (allowQuickRetry && quickRetryCount < 3 && elapsedMs < 4500) {
+                    quickRetryCount += 1
+                    statusText.text = "Listening..."
+                    isListening = true
+                    startPulseAnimation()
+                    mainHandler.postDelayed({ startListening(true) }, 320)
                     return
                 }
                 statusText.text = "Could not transcribe. Try again."
-                quickRetryUsed = false
+                quickRetryCount = 0
                 isListening = false
                 stopPulseAnimation()
             }
@@ -884,7 +886,7 @@ class AiVoiceKeyboardService : InputMethodService() {
             override fun onResults(results: Bundle?) {
                 stopPulseAnimation()
                 isListening = false
-                quickRetryUsed = false
+                quickRetryCount = 0
                 val durationMs = System.currentTimeMillis() - speechStartTime
                 val durationSec = Math.round(durationMs / 1000.0).toInt().coerceAtLeast(1)
 
@@ -922,9 +924,9 @@ class AiVoiceKeyboardService : InputMethodService() {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, selectedLanguage())
             putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
             putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
-            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 3600)
-            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 2600)
-            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 2500)
+            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 5000)
+            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 3800)
+            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 4500)
         }
         speechRecognizer?.startListening(intent)
     }

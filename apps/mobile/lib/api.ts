@@ -12,10 +12,10 @@ function sleep(ms: number) {
 }
 
 function friendlyRequestError(error: unknown) {
-  if (error instanceof DOMException && error.name === "AbortError") {
+  if (error instanceof Error && error.name === "AbortError") {
     return new Error("The HyperVoice server took too long to respond. Please try again in a moment.");
   }
-  if (error instanceof Error && error.name === "AbortError") {
+  if (typeof error === "object" && error !== null && "name" in error && error.name === "AbortError") {
     return new Error("The HyperVoice server took too long to respond. Please try again in a moment.");
   }
   return error;
