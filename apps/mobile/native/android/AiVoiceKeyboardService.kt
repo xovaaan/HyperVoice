@@ -56,6 +56,8 @@ class AiVoiceKeyboardService : InputMethodService() {
     private var isListening = false
     private var lastRmsLevel = 0f
     private var quickRetryCount = 0
+    private var activePreviewLength = 0
+    private var latestPartialTranscript = ""
 
     private val languageValues = listOf(
         "en-US",
@@ -565,7 +567,7 @@ class AiVoiceKeyboardService : InputMethodService() {
             val rowView = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER
-                setPadding(if (rowIndex == 1 && !isEmoji) dp(18) else 0, dp(3), if (rowIndex == 1 && !isEmoji) dp(18) else 0, dp(3))
+                setPadding(if (rowIndex == 1 && !isEmoji) dp(18) else 0, dp(2), if (rowIndex == 1 && !isEmoji) dp(18) else 0, dp(2))
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
@@ -605,10 +607,10 @@ class AiVoiceKeyboardService : InputMethodService() {
         return Button(this).apply {
             text = displayLabel
             textSize = when {
-                isReturn -> 23f
-                isSpace -> 22f
-                isSpecial -> 19f
-                else -> 25f
+                isReturn -> 21f
+                isSpace -> 20f
+                isSpecial -> 17f
+                else -> 23f
             }
             typeface = Typeface.DEFAULT
             isAllCaps = false
@@ -623,7 +625,7 @@ class AiVoiceKeyboardService : InputMethodService() {
             })
             layoutParams = LinearLayout.LayoutParams(
                 0,
-                if (isSpace || isReturn) dp(50) else dp(52),
+                if (isSpace || isReturn) dp(46) else dp(48),
                 when {
                     isSpace -> 4.8f
                     key == "123" -> 2.4f
@@ -633,7 +635,7 @@ class AiVoiceKeyboardService : InputMethodService() {
                     else -> 1f
                 }
             ).apply {
-                setMargins(dp(3), 0, dp(3), 0)
+                setMargins(dp(2), 0, dp(2), 0)
             }
             setOnClickListener { handleKey(key) }
             if (key == "backspace") {
@@ -840,6 +842,7 @@ class AiVoiceKeyboardService : InputMethodService() {
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this)
         speechStartTime = System.currentTimeMillis()
         isListening = true
+        latestPartialTranscript = ""
         statusText.text = "Listening"
         startPulseAnimation()
         speechRecognizer?.setRecognitionListener(object : RecognitionListener {
@@ -869,6 +872,15 @@ class AiVoiceKeyboardService : InputMethodService() {
 
             override fun onError(error: Int) {
                 val elapsedMs = System.currentTimeMillis() - speechStartTime
+                if (latestPartialTranscript.isNotBlank()) {
+                    val durationSec = Math.round(elapsedMs / 1000.0).toInt().coerceAtLeast(1)
+                    statusText.text = "Cleaning with AI..."
+                    isListening = false
+                    quickRetryCount = 0
+                    stopPulseAnimation()
+                    sendTranscriptForCleanup(latestPartialTranscript, selectedMode, selectedLanguage(), durationSec)
+                    return
+                }
                 if (allowQuickRetry && quickRetryCount < 3 && elapsedMs < 4500) {
                     quickRetryCount += 1
                     statusText.text = "Listening..."
@@ -894,13 +906,13 @@ class AiVoiceKeyboardService : InputMethodService() {
                     ?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                     ?.firstOrNull()
                     .orEmpty()
+                    .ifBlank { latestPartialTranscript }
                 if (transcript.isBlank()) {
                     statusText.text = "No speech detected"
                     return
                 }
                 previewText.visibility = View.VISIBLE
                 previewText.text = transcript
-                previewToHost(transcript)
                 statusText.text = "Cleaning with AI..."
                 sendTranscriptForCleanup(transcript, selectedMode, selectedLanguage(), durationSec)
             }
@@ -910,6 +922,7 @@ class AiVoiceKeyboardService : InputMethodService() {
                     ?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                     ?.firstOrNull()
                 if (!partial.isNullOrBlank()) {
+                    latestPartialTranscript = partial
                     previewText.visibility = View.VISIBLE
                     previewText.text = partial
                     previewToHost(partial)
@@ -934,7 +947,7 @@ class AiVoiceKeyboardService : InputMethodService() {
     private fun sendTranscriptForCleanup(transcript: String, mode: String, language: String, durationSec: Int) {
         Thread {
             val prefs = getSharedPreferences("hypervoice_keyboard", MODE_PRIVATE)
-            val apiBaseUrl = prefs.getString("apiBaseUrl", DEFAULT_API_BASE_URL) ?: DEFAULT_API_BASE_URL
+            val apiBaseUrl = (prefs.getString("apiBaseUrl", DEFAULT_API_BASE_URL) ?: DEFAULT_API_BASE_URL).trimEnd('/')
             val userId = prefs.getString("userId", "").orEmpty()
             val saveHistory = prefs.getBoolean("saveHistory", true)
 
@@ -983,15 +996,21 @@ class AiVoiceKeyboardService : InputMethodService() {
 
     private fun insertResult(text: String, status: String) {
         mainHandler.post {
-            finalText = text
+            finalText = appendPreviewText(finalText, text)
             previewText.visibility = View.VISIBLE
-            previewText.text = text
+            previewText.text = finalText
             statusText.text = status
-            val committed = commitToHost(text)
+            val committed = commitFinalText(text)
             if (!committed) {
                 statusText.text = "Tap the text field, then try again"
             }
         }
+    }
+
+    private fun appendPreviewText(existing: String, next: String): String {
+        if (existing.isBlank()) return next
+        if (next.isBlank()) return existing
+        return "${existing.trimEnd()} ${next.trimStart()}"
     }
 
     private fun commitToHost(text: String): Boolean {
@@ -1011,9 +1030,40 @@ class AiVoiceKeyboardService : InputMethodService() {
     private fun previewToHost(text: String): Boolean {
         if (text.isBlank()) return false
         val ic = currentInputConnection ?: cachedInputConnection ?: return false
-        val previewed = ic.setComposingText(text, 1)
+        ic.beginBatchEdit()
+        val previewed = try {
+            if (activePreviewLength > 0) {
+                ic.deleteSurroundingText(activePreviewLength, 0)
+            }
+            ic.commitText(text, 1)
+            activePreviewLength = text.length
+            true
+        } finally {
+            ic.endBatchEdit()
+        }
         cachedInputConnection = ic
         return previewed
+    }
+
+    private fun commitFinalText(text: String): Boolean {
+        if (text.isBlank()) return false
+        val ic = currentInputConnection ?: cachedInputConnection ?: return false
+        ic.beginBatchEdit()
+        val committed = try {
+            if (activePreviewLength > 0) {
+                ic.deleteSurroundingText(activePreviewLength, 0)
+                activePreviewLength = 0
+            }
+            val before = ic.getTextBeforeCursor(1, 0)?.toString().orEmpty()
+            val separator = if (before.isNotEmpty() && !before.last().isWhitespace()) " " else ""
+            ic.commitText(separator + text.trim(), 1)
+            ic.finishComposingText()
+            true
+        } finally {
+            ic.endBatchEdit()
+        }
+        cachedInputConnection = ic
+        return committed
     }
 
     private fun backspace() {
@@ -1051,8 +1101,13 @@ class AiVoiceKeyboardService : InputMethodService() {
         return if (capitalized.endsWith(".") || capitalized.endsWith("!") || capitalized.endsWith("?")) {
             capitalized
         } else {
-            "$capitalized."
+            if (looksLikeQuestion(capitalized)) "$capitalized?" else "$capitalized."
         }
+    }
+
+    private fun looksLikeQuestion(input: String): Boolean {
+        return Regex("^(who|what|when|where|why|how|can|could|would|will|do|does|did|is|are|am|should|may|might|has|have|had)\\b", RegexOption.IGNORE_CASE)
+            .containsMatchIn(input.trim())
     }
 
     private fun dp(value: Int): Int = (value * resources.displayMetrics.density).toInt()

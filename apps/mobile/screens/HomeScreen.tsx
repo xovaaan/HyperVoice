@@ -83,7 +83,7 @@ export default function HomeScreen() {
       { icon: "analytics-outline", value: `${items.length}`, unit: "entries", label: "History entries" },
       { icon: "flame-outline", value: `${streak}`, unit: "days", label: "Current streak" },
       { icon: "hourglass-outline", value: `${minutesSaved}`, unit: "min", label: "Time saved" },
-      { icon: "flash-outline", value: `${wpm}`, unit: "WPM", label: "Average dictation speed", wide: true }
+      { icon: "flash-outline", value: `${wpm}`, unit: "WPM", label: "Average dictation speed" }
     ];
     return statItems;
   }, [items]);
@@ -148,12 +148,12 @@ const styles = StyleSheet.create({
   },
   brandRow: { flexDirection: "row", alignItems: "center", gap: 14, flex: 1 },
   logoImage: {
-    width: 58,
-    height: 58,
-    borderRadius: 16,
+    width: 46,
+    height: 46,
+    borderRadius: 14,
     resizeMode: "contain"
   },
-  logo: { fontSize: 38, fontWeight: "900", color: "#071027", letterSpacing: 0 },
+  logo: { fontSize: 32, fontWeight: "900", color: "#071027", letterSpacing: 0 },
   bellButton: {
     width: 58,
     height: 58,
@@ -179,11 +179,12 @@ const styles = StyleSheet.create({
   statsGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 14
+    justifyContent: "space-between",
+    rowGap: 14
   },
   statCard: {
-    width: "48%",
-    minHeight: 156,
+    width: "47.6%",
+    minHeight: 152,
     borderRadius: 24,
     padding: 18,
     overflow: "hidden",
@@ -206,9 +207,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center"
   },
-  statValue: { fontSize: 42, fontWeight: "900", color: "#071027" },
-  statUnit: { fontSize: 20, fontWeight: "900", color: "#071027" },
-  statLabel: { color: "#303B57", fontSize: 17, fontWeight: "700" },
+  statValue: { fontSize: 38, fontWeight: "900", color: "#071027" },
+  statUnit: { fontSize: 18, fontWeight: "900", color: "#071027" },
+  statLabel: { color: "#303B57", fontSize: 16, fontWeight: "700" },
   watermark: {
     position: "absolute",
     right: 12,
