@@ -1,6 +1,8 @@
 import type { Language, Mode } from "./constants";
 import { API_BASE_URL } from "./config";
 
+const NORMALIZED_API_BASE_URL = API_BASE_URL.replace(/\/+$/, "");
+
 type ApiRequestInit = RequestInit & {
   timeoutMs?: number;
 };
@@ -25,7 +27,7 @@ async function request<T>(path: string, options?: ApiRequestInit): Promise<T> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), options?.timeoutMs ?? DEFAULT_TIMEOUT_MS);
   try {
-    const res = await fetch(`${API_BASE_URL}${path}`, {
+    const res = await fetch(`${NORMALIZED_API_BASE_URL}${path}`, {
       ...options,
       signal: controller.signal,
       headers: {

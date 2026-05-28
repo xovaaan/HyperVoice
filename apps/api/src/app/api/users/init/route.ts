@@ -8,20 +8,26 @@ export async function POST(request: Request) {
   }
 
   const { deviceId, email, displayName } = parsed.data;
-  const user = await prisma.user.upsert({
-    where: { deviceId },
-    create: {
-      deviceId,
-      email: email ?? undefined,
-      displayName: displayName ?? undefined,
-      lastSignedInAt: new Date()
-    },
-    update: {
-      lastSignedInAt: new Date(),
-      ...(email ? { email } : {}),
-      ...(displayName ? { displayName } : {})
-    }
-  });
+  let user;
+  try {
+    user = await prisma.user.upsert({
+      where: { deviceId },
+      create: {
+        deviceId,
+        email: email ?? undefined,
+        displayName: displayName ?? undefined,
+        lastSignedInAt: new Date()
+      },
+      update: {
+        lastSignedInAt: new Date(),
+        ...(email ? { email } : {}),
+        ...(displayName ? { displayName } : {})
+      }
+    });
+  } catch (error) {
+    console.error("User init failed", error);
+    return jsonError("Could not sync account. Please try again.", 503);
+  }
 
   return Response.json({ user });
 }
