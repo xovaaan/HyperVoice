@@ -1,21 +1,28 @@
 import { basicLocalCleanup, normalizeFinalPunctuation } from "@/lib/fallbackCleanup";
 import { callOpenRouterWithFallback } from "@/lib/openrouter";
 import { cleanupSystemPrompt, cleanupUserPrompt } from "@/lib/prompts";
+import { authenticate } from "@/lib/auth";
+import { saveHistoryEntry } from "@/lib/history";
 import { prisma } from "@/lib/prisma";
+import { limits, rateLimit } from "@/lib/rateLimit";
 import { cleanupSchema, jsonError } from "@/lib/validation";
 
 export async function POST(request: Request) {
+  const auth = await authenticate(request);
+  if ("response" in auth) return auth.response;
+  const user = auth.user;
+  const userId = user.id;
+
+  const limited =
+    (await rateLimit(limits.aiUser, userId)) ?? (await rateLimit(limits.aiUserDaily, userId));
+  if (limited) return limited;
+
   const parsed = cleanupSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {
     return jsonError("Invalid cleanup request");
   }
 
-  const { userId, transcript, mode, language, saveHistory, sourceApp, durationSec } = parsed.data;
-  const user = await prisma.user.findUnique({ where: { id: userId } });
-  if (!user) {
-    return jsonError("User not found", 404);
-  }
-
+  const { transcript, mode, language, saveHistory, sourceApp, durationSec } = parsed.data;
   const dictionaryWords = await prisma.dictionaryWord.findMany({
     where: { userId },
     select: { word: true },
@@ -48,16 +55,14 @@ export async function POST(request: Request) {
   finalText = normalizeFinalPunctuation(finalText, transcript);
 
   if (saveHistory && user.saveHistory) {
-    await prisma.textEntry.create({
-      data: {
-        userId,
-        rawTranscript: transcript,
-        finalText,
-        mode,
-        language,
-        sourceApp,
-        durationSec
-      }
+    await saveHistoryEntry({
+      userId,
+      rawTranscript: transcript,
+      finalText,
+      mode,
+      language,
+      sourceApp,
+      durationSec
     });
   }
 

@@ -1,15 +1,12 @@
+import { authenticate } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { jsonError } from "@/lib/validation";
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const userId = searchParams.get("userId");
-  if (!userId) {
-    return jsonError("Missing userId");
-  }
+  const auth = await authenticate(request);
+  if ("response" in auth) return auth.response;
 
   const items = await prisma.textEntry.findMany({
-    where: { userId },
+    where: { userId: auth.user.id },
     orderBy: { createdAt: "desc" },
     take: 100
   });
